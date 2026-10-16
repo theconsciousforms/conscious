@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="en"><head><script>if(new URLSearchParams(location.search).has('embed'))document.documentElement.classList.add('embed')</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Dashboard · The Conscious Forms</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
@@ -99,8 +99,8 @@ code{font-family:var(--mono);font-size:11px;background:rgba(28,25,181,.06);paddi
 <section class="view" id="v-ops"><div class="topbar"><div><h1>Operations</h1><div class="sub">the team as living clusters · every bot is not connected yet</div></div><div><button class="btn" id="demo">demo pulse (not real)</button></div></div>
  <div class="grid"><div class="card w12" style="padding:10px"><canvas id="ops"></canvas><div class="bots" id="bots"></div></div>
  <div class="card w6"><h3>run log</h3><div id="runlog"><div style="opacity:.6">no events yet. Real events arrive through the hook below.</div></div></div>
- <div class="card w6"><h3>hook</h3><div class="ph">Any bot (or the page hosting this dashboard) can report activity:<br><code>dashboard.postMessage({type:'tcf-bot-event', bot:'seo-checker', action:'audit finished', to:'thira'}, '*')</code><br><br>
- bot ids: <code>thira</code> <code>seo-checker</code> <code>website</code> <code>crm-ui</code> <code>elv-connector</code> <code>honeywell-fov</code>. <code>to</code> is optional (default: thira). Each event fires a pulse between clusters, adds a log line and stimulates the brain.</div></div></div></section>
+ <div class="card w6"><h3>hook</h3><div class="ph">Any bot (or the page hosting this dashboard) can report activity:<br><code>dashboard.postMessage({type:'tcf-bot-event', bot:'seo-checker', action:'audit finished', to:'core'}, '*')</code><br><br>
+ bot ids: <code>core</code> <code>seo-checker</code> <code>website</code> <code>crm-ui</code> <code>elv-connector</code> <code>honeywell-fov</code>. <code>to</code> is optional (default: core). Each event fires a pulse between clusters, adds a log line and stimulates the brain.</div></div></div></section>
 </main></div>
 <script>
 const $=s=>document.querySelector(s);
@@ -175,7 +175,7 @@ function layout(){const r=oc.getBoundingClientRect();OW=oc.width=r.width*deviceP
  CLU.forEach((c,i)=>{if(i===0){c.x=cx;c.y=cy;}else{const a=-Math.PI/2+(i-1)/5*Math.PI*2;c.x=cx+Math.cos(a)*R*1.25;c.y=cy+Math.sin(a)*R;}c.p.forEach(p=>{if(!p.x){p.x=c.x+p.ox;p.y=c.y+p.oy;}});});}
 addEventListener('resize',layout);
 const botIdx=b=>{const k=String(b||'').toLowerCase().replace(/[^a-z]/g,'');return BOTS.findIndex(([id,n])=>id.replace(/-/g,'')===k||n.toLowerCase().replace(/[^a-z]/g,'')===k||k.startsWith(id.split('-')[0]));};
-function botEvent(e,demo){const a=botIdx(e.bot),b=e.to!=null?botIdx(e.to):0;if(a<0)return;const A=CLU[a];PULSES.push({x:A.x,y:A.y,vx:0,vy:0,to:b<0?0:b,from:a,age:0});A.e+=1;
+function botEvent(e,demo){if(e.bot==='core')e.bot='thira';if(e.to==='core')e.to='thira';const a=botIdx(e.bot),b=e.to!=null?botIdx(e.to):0;if(a<0)return;const A=CLU[a];PULSES.push({x:A.x,y:A.y,vx:0,vy:0,to:b<0?0:b,from:a,age:0});A.e+=1;
  const box=$('#runlog');if(box.dataset.i!=='1'){box.innerHTML='';box.dataset.i='1';}const d=document.createElement('div');if(demo)d.className='demo';
  d.textContent=`${new Date().toLocaleTimeString()} · ${BOTS[a][1]} → ${BOTS[b<0?0:b][1]} · ${String(e.action||'event').slice(0,80)}${demo?' [demo, not real]':''}`;box.prepend(d);
  brain().postMessage({type:'tcf-bot-event',bot:BOTS[a][0],action:e.action},'*');}

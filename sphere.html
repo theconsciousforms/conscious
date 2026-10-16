@@ -15,6 +15,8 @@ font-size:clamp(18px,2.4vw,28px);font-weight:300;line-height:1.35;padding:18px 2
 backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;transition:opacity 1.2s ease,filter 1.2s ease;filter:blur(6px);pointer-events:none}
 #phrase.on{opacity:1;filter:blur(0)}#phrase small{display:block;margin-top:10px;font-size:11px;letter-spacing:.2em;opacity:.6}
 #modes{position:fixed;top:56px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:2}#modes button{font:inherit;font-size:11px;letter-spacing:.12em;text-transform:lowercase;padding:6px 12px;border-radius:999px;border:1px solid rgba(28,25,181,.25);background:rgba(255,255,255,.5);color:#1c19b5;cursor:pointer}#modes button.on{background:#1c19b5;color:#fff}body.still #modes,body.still #brand,body.still #phrase{display:none}
+body.embed #brand,body.embed #phrase,body.embed #modes,body.embed #pill{display:none!important}
+html.embed,body.embed{background:transparent!important}
 </style>
 <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
 </head><body>
@@ -22,10 +24,10 @@ backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;transition
 <script type="module">
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
-const still=new URLSearchParams(location.search).has('still');
+const still=new URLSearchParams(location.search).has('still');const EMBED=new URLSearchParams(location.search).has('embed');if(EMBED){document.documentElement.classList.add('embed');document.body.classList.add('embed');}
 if(still)document.body.classList.add('still');
-const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setClearColor(0xf3f4f0);
+const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true,alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setClearColor(0xf3f4f0,EMBED?0:1);
 document.body.appendChild(renderer.domElement);
 const scene=new THREE.Scene();
 const camera=new THREE.PerspectiveCamera(35,1,0.1,100);camera.position.set(0,0,still?3.95:5.2);
@@ -138,7 +140,7 @@ function setMode(m){mode=m;const [a,b]=MODES[m].c.map(c=>new THREE.Color(c));
  pc.set(base);pg.attributes.color.needsUpdate=true;fieldU.uC.value=a;uniforms.uBlue.value.set(a.r,a.g,a.b);
  fieldGroup.visible=m!=='jarvis'&&m!=='friday';jLines.visible=m==='jarvis';stone.visible=m==='vision';ultronSeed=-1;
  document.querySelectorAll('#modes button').forEach(x=>x.classList.toggle('on',x.dataset.m===m));}
-const mb=document.getElementById('modes');Object.keys(MODES).forEach((k,i)=>{const b=document.createElement('button');b.textContent=(i+1)+' '+k;b.dataset.m=k;
+const mb=document.getElementById('modes');Object.keys(MODES).forEach((k,i)=>{const b=document.createElement('button');b.textContent=(i+1)+' '+(k==='thira'?'conscious':k);b.dataset.m=k;
  b.onpointerdown=e=>e.stopPropagation();b.onpointerup=e=>{e.stopPropagation();setMode(k)};mb.appendChild(b);});
 addEventListener('keydown',e=>{const k=Object.keys(MODES)[+e.key-1];if(k)setMode(k);});
 function onClickMode(){if(mode==='ultron'){ultronSeed=(Math.random()*PN)|0;conv[ultronSeed]=1;cascadeT=0;fracture=1;}
