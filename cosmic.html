@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tree of life · The Conscious Forms</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root{--blue:#1c19b5;--acc:#0099ff;--ink:#1d1d1f;--mono:'JetBrains Mono',ui-monospace,Menlo,monospace;--fg:#1c19b5;--card:rgba(255,253,248,.66);--line:rgba(28,25,181,.14)}
+html,body{margin:0;height:100%;overflow:hidden;font-family:'Inter Tight',-apple-system,Helvetica,Arial,sans-serif;color:var(--ink);background:radial-gradient(1300px 900px at 50% 45%,#fffdf8 0%,#f6f2ea 45%,#e9e1d2 100%);transition:background 1s}
+body.night{--fg:#cfd8ff;--card:rgba(10,14,40,.6);--line:rgba(160,180,255,.18);color:#dfe5ff;background:radial-gradient(1300px 900px at 50% 45%,#0e1433 0%,#070a1c 55%,#03040b 100%)}
+canvas{display:block;position:fixed;inset:0;cursor:grab;touch-action:none}canvas:active{cursor:grabbing}
+#top{position:fixed;top:20px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:10px;z-index:5;pointer-events:none}
+#brand{color:var(--fg);font-size:12px;letter-spacing:.24em;font-weight:300}#brand b{font-weight:500}
+#pills{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;pointer-events:auto;padding:5px;border-radius:999px;background:var(--card);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--line);max-width:96vw}
+.pill{font-size:12px;padding:6px 13px;border-radius:999px;border:0;background:transparent;color:var(--fg);cursor:pointer;display:flex;gap:7px;align-items:center;font-family:inherit}.pill i{width:6px;height:6px;border-radius:50%;background:var(--c)}.pill:hover,.pill.on{background:var(--blue);color:#fff}
+.lbl{position:fixed;left:0;top:0;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:var(--fg);white-space:nowrap;pointer-events:none;z-index:3;transition:opacity .4s}
+.lbl:before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--c);margin-right:7px;vertical-align:1px}.lbl small{display:block;opacity:.55;font-size:9px;margin:2px 0 0 13px}
+#spk{position:fixed;left:0;top:0;font-family:var(--mono);font-size:9.5px;color:var(--fg);opacity:.75;pointer-events:none;z-index:3;white-space:nowrap}
+#side{position:fixed;right:20px;bottom:18px;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px;z-index:5;max-width:92vw}
+#side button,#side a{font-family:var(--mono);font-size:10.5px;padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;text-decoration:none;backdrop-filter:blur(8px)}
+#hud{position:fixed;left:20px;bottom:18px;width:260px;font-family:var(--mono);font-size:10.5px;line-height:1.6;color:var(--fg);background:var(--card);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:12px;padding:12px 14px;z-index:5}
+#hud b{font-weight:400;letter-spacing:.14em;text-transform:uppercase;opacity:.6}#hud .bar{display:grid;grid-template-columns:62px 1fr 38px;gap:6px;align-items:center}#hud .bar i{height:3px;border-radius:2px;display:block}
+#hud.off{display:none}
+#thought{position:fixed;right:20px;top:96px;width:330px;font-family:var(--mono);font-size:10px;line-height:1.5;color:var(--fg);background:var(--card);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:12px;padding:10px 12px;z-index:4;max-height:56vh;overflow:hidden}
+#thought:empty{display:none}#thought>b{font-weight:400;letter-spacing:.14em;text-transform:uppercase;opacity:.6;display:block;margin-bottom:4px}
+#thought .dc{padding:6px 0;border-top:1px solid var(--line)}#thought .dc i{opacity:.5;font-style:normal}#thought small{opacity:.72}
+#thought .m{display:inline-block;padding:0 6px;border-radius:999px;color:#fff;font-size:9.5px}.m-recall{background:#0099ff}.m-explore{background:#1c19b5}.m-react{background:#b5341c}
+#credit{position:fixed;left:50%;transform:translateX(-50%);bottom:48px;font-family:var(--mono);font-size:9px;color:var(--fg);opacity:.6;z-index:5;white-space:nowrap}#credit a{color:inherit}
+body.web #thought{display:none}
+#note{position:fixed;left:50%;bottom:68px;transform:translateX(-50%);font-size:12px;letter-spacing:.08em;color:var(--fg);opacity:.6;pointer-events:none;z-index:3;text-align:center;text-transform:lowercase}
+body.embed #side,body.embed #hud,body.embed #note,body.embed #pills,body.embed #thought{display:none}
+@media (max-width:760px){#hud{display:none}#note{display:none}#thought{display:none}#credit{max-width:90vw;bottom:56px;white-space:normal;text-align:center}}
+</style>
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
+</head><body>
+<div id="top"><div id="brand">{ the : <b>conscious</b> : forms } · cosmic web</div><div id="pills"></div></div>
+<div id="labels"></div><div id="spk"></div>
+<div id="hud"></div><div id="thought"></div><div id="credit">Connectome data: <a href="https://flywire.ai" target="_blank" rel="noopener">FlyWire</a> v783 · Dorkenwald et al. 2024, <a href="https://doi.org/10.1038/s41586-024-07558-y" target="_blank" rel="noopener">Nature 634:124</a> · Schlegel et al. 2024, <a href="https://doi.org/10.1038/s41586-024-07686-5" target="_blank" rel="noopener">Nature 634:139</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC-BY 4.0</a></div>
+<div id="note">the brain as a cosmic web · gravity builds the web · the web learns to think</div>
+<div id="side"><button id="mode">mode: tree of life</button><button id="pal">palette: light</button><button id="warp">cosmic time ×1</button><button id="mic">mic: off</button><button id="hudb">dynamics: on</button><button id="reseed">new universe</button><a href="mind.html">mind ↗</a><a href="sphere.html">sphere ↗</a><a href="mind-core.html">brain ↗</a><a href="index.html">dashboard ↗</a></div>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {mergeVertices} from 'three/addons/utils/BufferGeometryUtils.js';
+/* =====================================================================
+   THIRA · COSMIC WEB. The brain is the cosmic web. See physics.md §13.
+   Particle-mesh gravity (FFT Poisson solver) on Zel'dovich initial conditions forms
+   voids, sheets, filaments and nodes. Density peaks become neurons, filaments become axons.
+   ===================================================================== */
+const $=s=>document.querySelector(s),Q=new URLSearchParams(location.search);if(Q.has('embed'))document.body.classList.add('embed');
+const REG=[['practice','practice','#1c19b5'],['sacred','sacred geometry','#6b4fd8'],['kerala','kerala','#0b7a5c'],['nature','nature','#3f8f2f'],['bim','BIM precision','#0099ff'],['story','storytelling','#b5341c']];
+const SITE2R={practice:0,home:1,about:2,services:3,bim360:4,projects:5,contact:-1};
+const rnd=(a,b)=>a+Math.random()*(b-a),gauss=()=>{let u=0;while(!u)u=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(6.2832*Math.random());},sig=x=>1/(1+Math.exp(-x));
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches,COARSE=matchMedia('(pointer: coarse)').matches;
+let QL=Q.get('q')!=null?+Q.get('q'):(COARSE||RM?1:2);
+/* ---------- renderer ---------- */
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});renderer.setPixelRatio(QL===2?Math.min(devicePixelRatio,2):1);renderer.setClearColor(0,0);document.body.prepend(renderer.domElement);
+const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(42,1,.05,200);camera.position.set(0,1.2,10);
+const controls=new OrbitControls(camera,renderer.domElement);Object.assign(controls,{enableDamping:true,dampingFactor:.04,enablePan:false,minDistance:1.4,maxDistance:18,autoRotate:!RM,autoRotateSpeed:.12,rotateSpeed:.6});
+/* ===== 1. PARTICLE-MESH GRAVITY ===== */
+const M=32,M3=M*M*M,L=8,dx=L/M,LAT=[18,24,32][QL],N=LAT**3;   // mesh 32³ in a periodic box of side 8; N particles on a LAT³ lattice
+const RE=new Float32Array(M3),IM=new Float32Array(M3),RHO=new Float32Array(M3),PHI=new Float32Array(M3),FX=new Float32Array(M3),FY=new Float32Array(M3),FZ=new Float32Array(M3);
+const id3=(i,j,k)=>(((i+M)%M)*M+((j+M)%M))*M+((k+M)%M);
+// radix-2 FFT on length M
+const LOG=Math.log2(M),REV=new Uint16Array(M),COS=new Float32Array(M/2),SIN=new Float32Array(M/2),tr=new Float32Array(M),ti=new Float32Array(M);
+for(let i=0;i<M;i++){let r=0;for(let b=0;b<LOG;b++)r|=((i>>b)&1)<<(LOG-1-b);REV[i]=r;}for(let i=0;i<M/2;i++){COS[i]=Math.cos(2*Math.PI*i/M);SIN[i]=Math.sin(2*Math.PI*i/M);}
+function fft1(inv){for(let i=0;i<M;i++){const j=REV[i];if(j>i){let t=tr[i];tr[i]=tr[j];tr[j]=t;t=ti[i];ti[i]=ti[j];ti[j]=t;}}
+ for(let s=2;s<=M;s<<=1){const h=s>>1,st=M/s;for(let o=0;o<M;o+=s)for(let k=0;k<h;k++){const c=COS[k*st],sn=inv?SIN[k*st]:-SIN[k*st],a=o+k,b=a+h,xr=tr[b]*c-ti[b]*sn,xi=tr[b]*sn+ti[b]*c;tr[b]=tr[a]-xr;ti[b]=ti[a]-xi;tr[a]+=xr;ti[a]+=xi;}}}
+function fft3(inv){for(let ax=0;ax<3;ax++)for(let a=0;a<M;a++)for(let b=0;b<M;b++){for(let n=0;n<M;n++){const q=ax===0?id3(n,a,b):ax===1?id3(a,n,b):id3(a,b,n);tr[n]=RE[q];ti[n]=IM[q];}
+ fft1(inv);for(let n=0;n<M;n++){const q=ax===0?id3(n,a,b):ax===1?id3(a,n,b):id3(a,b,n);RE[q]=tr[n];IM[q]=ti[n];}}
+ if(inv){const s=1/M3;for(let q=0;q<M3;q++){RE[q]*=s;IM[q]*=s;}}}
+const K2=new Float32Array(M3),KV=[new Float32Array(M3),new Float32Array(M3),new Float32Array(M3)];
+for(let i=0;i<M;i++)for(let j=0;j<M;j++)for(let k=0;k<M;k++){const q=id3(i,j,k),f=n=>(n<M/2?n:n-M)*2*Math.PI/L;KV[0][q]=f(i);KV[1][q]=f(j);KV[2][q]=f(k);
+ const d=n=>(2*Math.sin(Math.PI*(n<M/2?n:n-M)/M)/dx)**2;K2[q]=d(i)+d(j)+d(k);}
+const P=new Float32Array(N*3),V=new Float32Array(N*3),DEN=new Float32Array(N),PREG=new Int8Array(N).fill(-1),ACC=new Float32Array(N);
+const SIMG={A:.05,gamma:.16,soft:.9,core:.6,Mc:.12,warp:1,ct:0};
+// Zel'dovich initial conditions from a Gaussian random field
+function seed(){for(let q=0;q<M3;q++){const k=Math.sqrt(KV[0][q]**2+KV[1][q]**2+KV[2][q]**2);const amp=k>0?Math.sqrt(Math.pow(k,-1.2)*Math.exp(-k*k/18)):0;RE[q]=gauss()*amp;IM[q]=gauss()*amp;}
+ const DR=new Float32Array(M3);const disp=[];for(let ax=0;ax<3;ax++){const sr=RE.slice(),si=IM.slice();for(let q=0;q<M3;q++){const k2=KV[0][q]**2+KV[1][q]**2+KV[2][q]**2;if(!k2){RE[q]=IM[q]=0;continue;}const f=KV[ax][q]/k2;const r=sr[q],i=si[q];RE[q]=-i*f;IM[q]=r*f;} // ψ_k = i k δ_k / k²
+  fft3(true);disp.push(RE.slice());RE.set(sr);IM.set(si);}
+ let rms=0;for(let q=0;q<M3;q++)rms+=disp[0][q]**2+disp[1][q]**2+disp[2][q]**2;rms=Math.sqrt(rms/M3);const D=.22*dx*M/LAT/rms*1.4;   // start in the linear regime
+ for(let a=0,n=0;a<LAT;a++)for(let b=0;b<LAT;b++)for(let c=0;c<LAT;c++,n++){const qx=(a+.5)/LAT*L-L/2,qy=(b+.5)/LAT*L-L/2,qz=(c+.5)/LAT*L-L/2,g=id3(Math.floor((qx+L/2)/dx),Math.floor((qy+L/2)/dx),Math.floor((qz+L/2)/dx));
+  const ux=disp[0][g]*D,uy=disp[1][g]*D,uz=disp[2][g]*D;P[n*3]=wrap(qx+ux);P[n*3+1]=wrap(qy+uy);P[n*3+2]=wrap(qz+uz);V[n*3]=ux*.25;V[n*3+1]=uy*.25;V[n*3+2]=uz*.25;}  // growing-mode velocities ∝ displacement
+ S.tc=0;}
+const wrap=x=>x<-L/2?x+L:x>=L/2?x-L:x;
+function deposit(){RHO.fill(0);const w=M3/N;for(let n=0;n<N;n++){const gx=(P[n*3]+L/2)/dx-.5,gy=(P[n*3+1]+L/2)/dx-.5,gz=(P[n*3+2]+L/2)/dx-.5,i=Math.floor(gx),j=Math.floor(gy),k=Math.floor(gz),fx=gx-i,fy=gy-j,fz=gz-k;
+ for(let a=0;a<2;a++)for(let b=0;b<2;b++)for(let c=0;c<2;c++)RHO[id3(i+a,j+b,k+c)]+=w*(a?fx:1-fx)*(b?fy:1-fy)*(c?fz:1-fz);}}   // cloud-in-cell
+function solve(){for(let q=0;q<M3;q++){RE[q]=RHO[q]-1;IM[q]=0;}fft3(false);
+ for(let q=0;q<M3;q++){const k2=K2[q];const g=k2?-SIMG.A/(1+Math.pow(SIMG.ct/22,2))/k2*Math.exp(-k2*dx*dx*SIMG.soft*SIMG.soft*.25):0;RE[q]*=g;IM[q]*=g;}  // Poisson: ∇²φ = A·δ, softened
+ fft3(true);PHI.set(RE);
+ for(let i=0;i<M;i++)for(let j=0;j<M;j++)for(let k=0;k<M;k++){const q=id3(i,j,k);FX[q]=-(PHI[id3(i+1,j,k)]-PHI[id3(i-1,j,k)])/(2*dx);FY[q]=-(PHI[id3(i,j+1,k)]-PHI[id3(i,j-1,k)])/(2*dx);FZ[q]=-(PHI[id3(i,j,k+1)]-PHI[id3(i,j,k-1)])/(2*dx);}}
+function sampleGrid(G,x,y,z){const gx=(x+L/2)/dx-.5,gy=(y+L/2)/dx-.5,gz=(z+L/2)/dx-.5,i=Math.floor(gx),j=Math.floor(gy),k=Math.floor(gz),fx=gx-i,fy=gy-j,fz=gz-k;let s=0;
+ for(let a=0;a<2;a++)for(let b=0;b<2;b++)for(let c=0;c<2;c++)s+=G[id3(i+a,j+b,k+c)]*(a?fx:1-fx)*(b?fy:1-fy)*(c?fz:1-fz);return s;}
+/* ===== 2. NEURAL LAYER ON THE WEB ===== */
+const S={t:0,G:0,Ad:0,Sin:0,ign:false,ignN:0,lastIgn:-99,err:0,phA:0,voice:0,vext:0,tc:0,waveT:-99};
+let nodes=[],edges=[],nextId=1,heads=new Array(6).fill(-1);const W8=new Map(),beads=[],sched=[];
+const rate=new Float32Array(6),rc=new Float32Array(6),perr=new Float32Array(6),pred=new Float32Array(6),prevA=new Float32Array(6),cov=new Float32Array(6);let siteC=-1,hoverC=-1,focusC=-1;
+function findNodes(){const old=nodes,nn=[];
+ for(let i=0;i<M;i++)for(let j=0;j<M;j++)for(let k=0;k<M;k++){const q=id3(i,j,k),r=RHO[q];if(r<3.2)continue;let peak=true;
+  for(let a=-1;a<=1&&peak;a++)for(let b=-1;b<=1&&peak;b++)for(let c=-1;c<=1;c++){if((a||b||c)&&RHO[id3(i+a,j+b,k+c)]>r){peak=false;break;}}
+  if(peak){let mx=0,my=0,mz=0,ms=0;for(let a=-1;a<=1;a++)for(let b=-1;b<=1;b++)for(let c=-1;c<=1;c++){const w=RHO[id3(i+a,j+b,k+c)];mx+=a*w;my+=b*w;mz+=c*w;ms+=w;}
+   nn.push({x:(i+.5+mx/ms)*dx-L/2,y:(j+.5+my/ms)*dx-L/2,z:(k+.5+mz/ms)*dx-L/2,mass:ms});}}
+ nn.sort((a,b)=>b.mass-a.mass);nn.length=Math.min(nn.length,[40,60,80][QL]);
+ for(const n of nn){let best=null,bd=.36;for(const o of old){const d=(o.x-n.x)**2+(o.y-n.y)**2+(o.z-n.z)**2;if(d<bd&&!o.taken){bd=d;best=o;}}   // keep identity: match to the nearest previous node
+  if(best){best.taken=1;Object.assign(n,{id:best.id,v:best.v,w:best.w,Is:best.Is,trace:best.trace,act:best.act,reg:best.reg,ph:best.ph,visits:best.visits});}else Object.assign(n,{id:nextId++,v:rnd(-1.5,1.5),w:rnd(-.4,1),Is:0,trace:0,act:0,reg:-1,visits:0});
+  n.Ib=.2+.22*Math.min(1,n.mass/12);}
+ nodes=nn;
+ // superclusters: keep the six region heads stable, refill from the most massive nodes
+ const byId=new Map(nodes.map((n,i)=>[n.id,i]));heads=heads.map(h=>byId.has(h)?h:-1);
+ for(let r=0;r<6;r++)if(heads[r]<0){for(const n of nodes){if(heads.includes(n.id))continue;if(heads.some(h=>h>=0&&dist(nodes[byId.get(h)],n)<2.2))continue;heads[r]=n.id;break;}}
+ const H=heads.map(h=>h>=0?nodes[byId.get(h)]:null);
+ for(const n of nodes){let b=-1,bd=1e9;H.forEach((h,r)=>{if(h){const d=dist(h,n);if(d<bd){bd=d;b=r;}}});n.reg=b;}
+ // axons: node pairs joined by a dense filament
+ edges=[];for(let a=0;a<nodes.length;a++)for(let b=a+1;b<nodes.length;b++){const A=nodes[a],B=nodes[b],d=dist(A,B);if(d>2.8||d<.2)continue;let mn=1e9;
+  for(let s=1;s<8;s++){const u=s/8;mn=Math.min(mn,sampleGrid(RHO,A.x+(B.x-A.x)*u,A.y+(B.y-A.y)*u,A.z+(B.z-A.z)*u));}
+  if(mn>1.15){const key=Math.min(A.id,B.id)+'-'+Math.max(A.id,B.id);if(!W8.has(key))W8.set(key,1);edges.push({a,b,len:d,key});}}
+ for(const n of nodes)n.adj=[];edges.forEach((e,k)=>{nodes[e.a].adj.push(k);nodes[e.b].adj.push(k);});
+ // particle → region (dense particles only)
+ for(let n=0;n<N;n++){if(DEN[n]<1.4){PREG[n]=-1;continue;}let b=-1,bd=1e9;H.forEach((h,r)=>{if(h){const d=(h.x-P[n*3])**2+(h.y-P[n*3+1])**2+(h.z-P[n*3+2])**2;if(d<bd){bd=d;b=r;}}});PREG[n]=bd<6?b:-1;}
+ rebuildEdgeGeom();}
+const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y,a.z-b.z);
+function spike(i,t){const n=nodes[i];n.trace+=1;n.act=1;
+ for(const k of n.adj){const e=edges[k],j=e.a===i?e.b:e.a,T=e.len/1.6;sched.push([t+T,j,e.key]);beads.push({e:k,from:i,t0:t,T});
+  W8.set(e.key,Math.min(3,W8.get(e.key)+.06*nodes[j].trace));}}   // Hebbian
+function ignite(t){S.ign=true;S.ignN++;S.lastIgn=t;S.waveT=t;emit('ignite',{});coreKick(.35);
+ nodes.forEach((n,i)=>{const d=Math.hypot(n.x,n.y,n.z);sched.push([t+d/2.2,i,'broadcast']);});}   // broadcast travels outward through the web
+function neural(h,t){const tau=5,eps=.08;let sr=new Float32Array(6),si=new Float32Array(6),cnt=new Float32Array(6),fire=new Float32Array(6);
+ S.phA+=(6.2832*.6)*h;const alpha=Math.cos(S.phA);
+ for(let q=sched.length-1;q>=0;q--){const [ta,j,key]=sched[q];if(ta<=t){if(nodes[j])nodes[j].Is+=key==='broadcast'?.9:.55*(W8.get(key)||1);sched.splice(q,1);}}
+ nodes.forEach((n,i)=>{const I=n.Ib+.06*alpha*(1-S.G)+n.Is+(n.reg===siteC?.08:0)+(n.reg===hoverC?.08:0)+(n.reg===focusC?.12:0)+(i===S.tc?.25:0)+S.voice*.3+gauss()*.05;
+  const v=n.v,dv=tau*(v-v*v*v/3-n.w+I);n.v+=dv*h;n.w+=tau*eps*(v+.7-.8*n.w)*h;n.dv=dv;if(v<1&&n.v>=1)spike(i,t);
+  n.Is*=Math.exp(-h/.1);n.trace*=Math.exp(-h/.3);n.act*=Math.exp(-h*3);
+  if(n.reg>=0){const th=Math.atan2(n.w,n.v);sr[n.reg]+=Math.cos(th);si[n.reg]+=Math.sin(th);cnt[n.reg]++;fire[n.reg]+=n.v>1?1:0;}});
+ for(const [k,w] of W8)W8.set(k,w+(1-w)*h/30);
+ let Sx=0,nr=0;for(let r=0;r<6;r++){if(cnt[r]){rc[r]=Math.hypot(sr[r],si[r])/cnt[r];rate[r]+=(fire[r]/cnt[r]*4-rate[r])*h*2;Sx+=rc[r]*Math.min(1,rate[r]/1.2);nr++;}}
+ Sx=(nr?Sx/nr:0)+.35*Math.tanh(S.Sin)+S.voice*.4;
+ S.G+=(-S.G+sig(10*(Sx+.9*S.G-2*S.Ad-.72)))*h/.35;S.Ad+=(S.G-S.Ad)*h/3;S.Sin*=Math.exp(-h/1.5);
+ if(!S.ign&&S.G>.6&&t-S.lastIgn>5)ignite(t);if(S.ign&&S.G<.25){S.ign=false;emit('release',{});}}
+/* ===== 3. THE CORE: the original contour sphere as the great attractor (mass–spring membrane) ===== */
+const noise=`
+vec3 mod289(vec3 x){return x-floor(x*(1./289.))*289.;}vec4 mod289(vec4 x){return x-floor(x*(1./289.))*289.;}
+vec4 permute(vec4 x){return mod289(((x*34.)+1.)*x);}vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-0.85373472095314*r;}
+float snoise(vec3 v){const vec2 C=vec2(1./6.,1./3.);const vec4 D=vec4(0.,.5,1.,2.);
+vec3 i=floor(v+dot(v,C.yyy));vec3 x0=v-i+dot(i,C.xxx);vec3 g=step(x0.yzx,x0.xyz);vec3 l=1.-g;
+vec3 i1=min(g.xyz,l.zxy);vec3 i2=max(g.xyz,l.zxy);vec3 x1=x0-i1+C.xxx;vec3 x2=x0-i2+C.yyy;vec3 x3=x0-D.yyy;
+i=mod289(i);vec4 p=permute(permute(permute(i.z+vec4(0.,i1.z,i2.z,1.))+i.y+vec4(0.,i1.y,i2.y,1.))+i.x+vec4(0.,i1.x,i2.x,1.));
+float n_=.142857142857;vec3 ns=n_*D.wyz-D.xzx;vec4 j=p-49.*floor(p*ns.z*ns.z);vec4 x_=floor(j*ns.z);vec4 y_=floor(j-7.*x_);
+vec4 x=x_*ns.x+ns.yyyy;vec4 y=y_*ns.x+ns.yyyy;vec4 h=1.-abs(x)-abs(y);vec4 b0=vec4(x.xy,y.xy);vec4 b1=vec4(x.zw,y.zw);
+vec4 s0=floor(b0)*2.+1.;vec4 s1=floor(b1)*2.+1.;vec4 sh=-step(h,vec4(0.));vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy;vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;
+vec3 p0=vec3(a0.xy,h.x);vec3 p1=vec3(a0.zw,h.y);vec3 p2=vec3(a1.xy,h.z);vec3 p3=vec3(a1.zw,h.w);
+vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));p0*=norm.x;p1*=norm.y;p2*=norm.z;p3*=norm.w;
+vec4 m=max(.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.);m=m*m;
+return 42.*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));}
+float fbm(vec3 p){float f=0.,a=.5;for(int i=0;i<4;i++){f+=a*snoise(p);p*=2.02;a*=.5;}return f;}`;
+let cg=new THREE.IcosahedronGeometry(1,[14,20,28][QL]);cg.deleteAttribute('normal');cg.deleteAttribute('uv');cg=mergeVertices(cg);cg.computeVertexNormals();
+const CN=cg.attributes.position.count,CPd=cg.attributes.position.array,CU=new Float32Array(CN),CW=new Float32Array(CN),CA=new Float32Array(CN);cg.setAttribute('disp',new THREE.BufferAttribute(CU,1));cg.setAttribute('rate',new THREE.BufferAttribute(CW,1));
+const NBo=new Int32Array(CN+1);let NB;{const ix=cg.index.array,sets=Array.from({length:CN},()=>new Set());for(let f=0;f<ix.length;f+=3){const a=ix[f],b=ix[f+1],c=ix[f+2];sets[a].add(b).add(c);sets[b].add(a).add(c);sets[c].add(a).add(b);}
+ let tot=0;sets.forEach((s,i)=>{NBo[i]=tot;tot+=s.size;});NBo[CN]=tot;NB=new Int32Array(tot);sets.forEach((s,i)=>{let k=NBo[i];s.forEach(j=>NB[k++]=j);});}
+const kT=700*(([14,20,28][QL]+1)/41)**2;
+function coreKick(a){for(let i=0;i<CN;i++)CW[i]+=a*(.5+.5*Math.sin(i*1.7));}
+function stepCore(h){for(let i=0;i<CN;i++){let s=0;for(let k=NBo[i];k<NBo[i+1];k++)s+=CU[NB[k]];CA[i]=kT*(s-(NBo[i+1]-NBo[i])*CU[i])-30*CU[i]-2.2*CW[i];}for(let i=0;i<CN;i++){CW[i]+=CA[i]*h;CU[i]+=CW[i]*h;}}
+const U={uTime:{value:0},uG:{value:0},uErr:{value:0},uVoice:{value:0},uNight:{value:0},uBlue:{value:new THREE.Color(0x1c19b5)},uAcc:{value:new THREE.Color(0x0099ff)}};
+const core=new THREE.Mesh(cg,new THREE.ShaderMaterial({uniforms:U,extensions:{derivatives:true},
+vertexShader:`attribute float disp,rate;varying vec3 vPos,vN,vView;varying float vU,vR;void main(){vPos=position;vU=disp;vR=rate;vec4 mv=modelViewMatrix*vec4(position*(1.+disp),1.);vN=normalize(normalMatrix*normal);vView=normalize(-mv.xyz);gl_Position=projectionMatrix*mv;}`,
+fragmentShader:noise+`uniform float uTime,uG,uErr,uVoice,uNight;uniform vec3 uBlue,uAcc;varying vec3 vPos,vN,vView;varying float vU,vR;
+void main(){vec3 p=normalize(vPos);float t=uTime*.05;vec3 q=p*.85+vec3(0.,t*.6,t);float n=snoise(q)*.75+snoise(q*1.9+vec3(3.1,1.7,-t))*.25+vU*2.6+uErr*.0025*snoise(p*18.+uTime*2.);
+float bands=n*8.+uTime*.03;float g=abs(fract(bands)-.5);float w=fwidth(bands);float b=1.-smoothstep(.13-w,.13+w,g);
+vec3 paper=mix(vec3(1.,.995,.985),vec3(.06,.08,.2),uNight),ink=mix(uBlue,vec3(.55,.75,1.),uNight);vec3 col=mix(paper,ink,b);col=mix(col,uAcc,clamp(abs(vR)*5.,0.,.5));col=mix(col,uAcc,uG*b*.35);
+float fr=1.-max(dot(normalize(vN),normalize(vView)),0.);col=mix(col,uAcc*.6+uBlue*.4,pow(fr,2.2)*(.55+uVoice*.4));col+=vec3(.9,.95,1.)*pow(fr,6.)*.45;gl_FragColor=vec4(col,1.);}`}));
+core.scale.setScalar(SIMG.core);scene.add(core);
+const halo=new THREE.Mesh(new THREE.SphereGeometry(SIMG.core*1.5,48,48),new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.BackSide,uniforms:{uP:{value:0}},
+ vertexShader:`varying vec3 vN;void main(){vN=normalize(normalMatrix*normal);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+ fragmentShader:`uniform float uP;varying vec3 vN;void main(){float k=smoothstep(0.,.75,-vN.z);gl_FragColor=vec4(.05,.38,1.,pow(k,2.6)*(.25+uP));}`}));scene.add(halo);
+/* ===== 4. RENDERING THE WEB ===== */
+const PU={uS:{value:1},uFocus:{value:10},uNight:{value:0},uWave:{value:-99},uTree:{value:0},uTime:{value:0},uErr:{value:0}};
+const COL=new Float32Array(N*3),pgeo=new THREE.BufferGeometry();pgeo.setAttribute('position',new THREE.BufferAttribute(P,3));pgeo.setAttribute('color',new THREE.BufferAttribute(COL,3));pgeo.setAttribute('den',new THREE.BufferAttribute(DEN,1));pgeo.setAttribute('acc',new THREE.BufferAttribute(ACC,1));
+const pmat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,vertexColors:true,uniforms:PU,
+vertexShader:`uniform float uS,uFocus,uNight,uWave,uTime,uErr,uTree;attribute float den,acc;varying vec4 vC;
+void main(){vec4 mv=modelViewMatrix*vec4(position,1.);float z=-mv.z,c=abs(z-uFocus)*.18,fog=smoothstep(7.,19.,z);
+ float r=length(position),edge=smoothstep(3.9,3.1,max(abs(position.x),max(abs(position.y),abs(position.z))));     // fade at the periodic box edge
+ float wave=exp(-pow(r-(uTime-uWave)*2.2,2.)*3.)*step(0.,uTime-uWave)*exp(-(uTime-uWave)*.3);
+ float d=clamp(log(1.+den)/2.2,0.,1.);float a=(.06+.5*d+.35*clamp(acc*.6,0.,1.)+wave*.6)*edge*mix(1.,smoothstep(-3.4,-.8,position.y)*.75,uTree)*(1.-fog*.7)/(1.+c*c*2.);
+ vec3 col=mix(color,vec3(0.,.6,1.),clamp(acc*.5+wave,0.,1.));if(uNight>.5)col=mix(col,vec3(.75,.85,1.),.35+d*.3);
+ vC=vec4(col,a*(uNight>.5?1.3:1.));gl_PointSize=uS*(1.2+d*1.8+wave*2.)*(1.+c*1.5)*9./z;gl_Position=projectionMatrix*mv;}`,
+fragmentShader:`varying vec4 vC;void main(){float d=length(gl_PointCoord-.5);if(d>.5)discard;gl_FragColor=vec4(vC.rgb,vC.a*exp(-d*d*12.));}`});
+const pts=new THREE.Points(pgeo,pmat);pts.frustumCulled=false;scene.add(pts);
+// axons (edges) and neuron somata (nodes)
+let eGeo=new THREE.BufferGeometry(),eMat=new THREE.LineBasicMaterial({vertexColors:true,transparent:true,opacity:.55,depthWrite:false});const eLines=new THREE.LineSegments(eGeo,eMat);eLines.frustumCulled=false;scene.add(eLines);
+function rebuildEdgeGeom(){eGeo.dispose();eGeo=new THREE.BufferGeometry();eGeo.setAttribute('position',new THREE.BufferAttribute(new Float32Array(edges.length*6),3));eGeo.setAttribute('color',new THREE.BufferAttribute(new Float32Array(edges.length*6),3));eLines.geometry=eGeo;}
+const NMAX=80,nPos=new Float32Array(NMAX*3),nCol=new Float32Array(NMAX*3),nSz=new Float32Array(NMAX),ng=new THREE.BufferGeometry();ng.setAttribute('position',new THREE.BufferAttribute(nPos,3));ng.setAttribute('color',new THREE.BufferAttribute(nCol,3));ng.setAttribute('sz',new THREE.BufferAttribute(nSz,1));
+const nMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,vertexColors:true,uniforms:PU,vertexShader:`uniform float uS;attribute float sz;varying vec3 vC;void main(){vC=color;vec4 mv=modelViewMatrix*vec4(position,1.);gl_PointSize=uS*sz*60./-mv.z;gl_Position=projectionMatrix*mv;}`,
+ fragmentShader:`varying vec3 vC;void main(){float d=length(gl_PointCoord-.5);if(d>.5)discard;gl_FragColor=vec4(vC,smoothstep(.5,.0,d)*.9);}`});
+const nPts=new THREE.Points(ng,nMat);nPts.frustumCulled=false;scene.add(nPts);
+const BMAX=400,bPos=new Float32Array(BMAX*3),bg=new THREE.BufferGeometry();bg.setAttribute('position',new THREE.BufferAttribute(bPos,3));
+const bPts=new THREE.Points(bg,new THREE.PointsMaterial({color:0x0099ff,size:.09,transparent:true,opacity:.95,depthWrite:false}));bPts.frustumCulled=false;scene.add(bPts);
+// attention spark: a point mass that walks the filaments
+const spark={x:new THREE.Vector3(0,1,2),v:new THREE.Vector3(),tgt:-1,cur:-1,hist:[]};
+const sparkG=new THREE.Group(),ring=new THREE.Mesh(new THREE.TorusGeometry(.09,.008,8,64),new THREE.MeshBasicMaterial({color:0x1c19b5,transparent:true})),dot=new THREE.Mesh(new THREE.SphereGeometry(.03,12,10),new THREE.MeshBasicMaterial({color:0x1c19b5}));sparkG.add(ring,dot);scene.add(sparkG);
+const trailGeo=new THREE.BufferGeometry();trailGeo.setAttribute('position',new THREE.BufferAttribute(new Float32Array(60*3),3));const trail=new THREE.Line(trailGeo,new THREE.LineBasicMaterial({color:0x0099ff,transparent:true,opacity:.6}));trail.frustumCulled=false;scene.add(trail);
+function stepSpark(h){if(!nodes.length)return;if(spark.tgt<0||!nodes[spark.tgt])spark.tgt=0;const T=nodes[spark.tgt],x=spark.x,v=spark.v;
+ const a=new THREE.Vector3(T.x-x.x,T.y-x.y,T.z-x.z).multiplyScalar(4).addScaledVector(v,-3);const r=x.length();if(r<SIMG.core*1.6)a.addScaledVector(x.clone().normalize(),(SIMG.core*1.6-r)*25);
+ v.addScaledVector(a,h);x.addScaledVector(v,h);
+ if(x.distanceTo(new THREE.Vector3(T.x,T.y,T.z))<.18){T.visits=(T.visits||0)+1;if(T.reg>=0){cov[T.reg]=Math.min(1,cov[T.reg]+.08);}
+  const prev=spark.cur;spark.cur=spark.tgt;let best=-1,bs=-1e9;for(const k of T.adj){const e=edges[k],j=e.a===spark.cur?e.b:e.a;if(j===prev&&T.adj.length>1)continue;const nj=nodes[j];
+   const s=nj.act+1/(1+(nj.visits||0))+(nj.reg>=0?(1-cov[nj.reg]):0)+(nj.reg===focusC||nj.reg===siteC?1:0);if(s>bs){bs=s;best=j;}}   // salience: activity + novelty + least-covered region
+  if(best<0){let bd=1e9;nodes.forEach((n,i)=>{if(i===spark.cur)return;const d=dist(n,T)+(n.visits||0)*.5;if(d<bd){bd=d;best=i;}});}
+  if(best!==spark.tgt){spark.tgt=best;S.tc=best;const R=nodes[best].reg;emit('attend',{region:R>=0?REG[R][0]:null});}}
+ for(let r=0;r<6;r++)cov[r]*=Math.exp(-h/90);}
+/* ---------- labels & UI ---------- */
+const lbl=REG.map(([id,name,c])=>{const d=document.createElement('div');d.className='lbl';d.style.setProperty('--c',c);d.innerHTML=name+'<small>supercluster</small>';$('#labels').appendChild(d);return d;});
+REG.forEach(([id,name,c],i)=>{const b=document.createElement('button');b.className='pill';b.style.setProperty('--c',c);b.innerHTML='<i></i>'+name;b.onclick=()=>focusReg(i);b.onmouseenter=()=>hoverC=i;b.onmouseleave=()=>hoverC=-1;$('#pills').appendChild(b);});
+const cam={on:false,pos:new THREE.Vector3(),tgt:new THREE.Vector3(),v:new THREE.Vector3(),tv:new THREE.Vector3()};
+function headNode(r){const id=heads[r];return nodes.find(n=>n.id===id);}
+function focusReg(i){if(MODE==='tree'){if(focusC===i){focusC=-1;cam.pos.set(0,2.4,13.5);cam.tgt.set(0,1.8,0);cam.on=true;controls.autoRotate=!RM;document.querySelectorAll('.pill').forEach(b=>b.classList.remove('on'));return;}focusC=i;const f=FRC[i].clone(),o=new THREE.Vector3(f.x,0,f.z).normalize();cam.tgt.copy(f);cam.pos.copy(f).addScaledVector(o,3.2).add(new THREE.Vector3(0,.5,0));cam.on=true;controls.autoRotate=false;S.Sin+=.3;document.querySelectorAll('.pill').forEach((b,k)=>b.classList.toggle('on',k===i));return;}const n=headNode(i);if(!n)return;if(focusC===i){focusC=-1;cam.pos.set(0,1.2,10);cam.tgt.set(0,0,0);cam.on=true;controls.autoRotate=!RM;document.querySelectorAll('.pill').forEach(b=>b.classList.remove('on'));return;}
+ focusC=i;const d=new THREE.Vector3(n.x,n.y,n.z);cam.tgt.copy(d);cam.pos.copy(d).add(d.clone().normalize().multiplyScalar(2.6)).add(new THREE.Vector3(0,.6,0));cam.on=true;controls.autoRotate=false;S.Sin+=.3;
+ document.querySelectorAll('.pill').forEach((b,k)=>b.classList.toggle('on',k===i));}
+controls.addEventListener('start',()=>cam.on=false);
+let night=Q.get('palette')==='night';function setPal(n){night=n;document.body.classList.toggle('night',n);PU.uNight.value=U.uNight.value=n?1:0;pmat.blending=nMat.blending=n?THREE.AdditiveBlending:THREE.NormalBlending;pmat.needsUpdate=nMat.needsUpdate=true;$('#pal').textContent='palette: '+(n?'night sky':'light');baseColors();}
+$('#pal').onclick=()=>setPal(!night);
+$('#warp').onclick=()=>{SIMG.warp=SIMG.warp===1?4:1;$('#warp').textContent='cosmic time ×'+SIMG.warp;};
+let hudOn=!Q.has('nohud');$('#hudb').onclick=()=>{hudOn=!hudOn;$('#hud').classList.toggle('off',!hudOn);$('#hudb').textContent='dynamics: '+(hudOn?'on':'off');};
+$('#reseed').onclick=()=>{if(MODE==='tree'){seedTree();emit('seed',{});return;}seed();nodes=[];edges=[];heads.fill(-1);W8.clear();beads.length=sched.length=0;S.cosmicT=SIMG.ct=0;S.t0=S.t;emit('reseed',{});};
+// voice (optional, asks only when clicked)
+let mic=null,buf=null;$('#mic').onclick=async()=>{if(mic){mic.st.getTracks().forEach(t=>t.stop());mic=null;$('#mic').textContent='mic: off';return;}
+ try{const st=await navigator.mediaDevices.getUserMedia({audio:true}),ac=new AudioContext(),an=ac.createAnalyser();an.fftSize=512;ac.createMediaStreamSource(st).connect(an);mic={st,an};buf=new Float32Array(512);$('#mic').textContent='mic: listening';}catch(e){$('#mic').textContent='mic: blocked';}};
+function micLevel(){if(!mic)return 0;mic.an.getFloatTimeDomainData(buf);let s=0;for(const x of buf)s+=x*x;return Math.min(1,Math.sqrt(s/buf.length)*6);}
+// embed hooks (same protocol as mind-core.html)
+function siteSection(name){const k=String(name||'').toLowerCase().replace(/^\/+|\/+$/g,'')||'home';const r=SITE2R[k];if(r===undefined)return;if(r<0){S.Sin+=.5;return;}siteC=r;S.Sin+=.2;}
+addEventListener('message',e=>{const d=e.data;if(!d||typeof d!=='object')return;if(d.type==='tcf-section')siteSection(d.section);if(d.type==='tcf-speaking')S.vext=Math.max(0,Math.min(1,+d.level||0));if(d.type==='tcf-bot-event')S.Sin+=.12;});
+{const m=location.hash.match(/section=([\w\-\/]+)/);if(m)setTimeout(()=>siteSection(m[1]),1500);if(Q.get('section'))setTimeout(()=>siteSection(Q.get('section')),1500);}
+window.thiraSection=siteSection;
+const EV=[];function emit(kind,data){const ev={kind,t:+S.t.toFixed(1),G:+S.G.toFixed(2),...data};EV.push(ev);if(EV.length>50)EV.shift();if(window.parent!==window)window.parent.postMessage({type:'thira-event',event:ev,source:'cosmic'},'*');}
+function baseColors(){const cs=REG.map(r=>new THREE.Color(r[2]));const base=new THREE.Color(night?0x8fa8ff:0x1c19b5);for(let n=0;n<N;n++){const c=PREG[n]>=0?cs[PREG[n]].clone().lerp(base,.35):base;COL[n*3]=c.r;COL[n*3+1]=c.g;COL[n*3+2]=c.b;}pgeo.attributes.color.needsUpdate=true;}
+/* ===== 5. TREE OF LIFE (default mode) · physics.md §14 =====
+   Growth: space colonization (canopy) + nutrient-gradient roots. Mechanics: articulated rotational springs (k ∝ r⁴/l³),
+   gravity sag ∝ mass, quadratic wind drag, Newton-III coupling parent↔child, rigid segment lengths. Sap: Poiseuille network
+   (conductance ∝ r⁴/l), Murray radii. Neurons: FitzHugh–Nagumo on every node, delayed spikes, Hebbian thickening. */
+let MODE=Q.get('mode')==='web'?'web':'tree';
+const CORE_Y=.35,GROUND=-1.3,KB=1500,ZETA=.6,GRAV=1.6,DI=1.15,DK=.2,DL=.19,GROW_DT=.22,GROW_N=90;let TREE_TH=.41;
+const NT=[620,900,1100][QL];
+const TX=new Float32Array(NT*3),TV=new Float32Array(NT*3),TF=new Float32Array(NT*3),TO=new Float32Array(NT*3),TRP=new Float32Array(NT*3);
+const TP=new Int32Array(NT).fill(-1),TL=new Float32Array(NT),TR=new Float32Array(NT),TM=new Float32Array(NT),TK=new Float32Array(NT),TC=new Float32Array(NT),TY0=new Float32Array(NT),TB=new Float32Array(NT),TROOT=new Uint8Array(NT),TREG=new Int8Array(NT),TNL=new Int16Array(NT),Tdeg=new Uint8Array(NT),Tvis=new Uint16Array(NT);
+const Tv=new Float32Array(NT),Tw=new Float32Array(NT),TIs=new Float32Array(NT),Ttr=new Float32Array(NT),Tact=new Float32Array(NT),TPr=new Float32Array(NT),TQ=new Float32Array(NT),TW=new Float32Array(NT),TG=new Float32Array(NT),TSRC=new Float32Array(NT);
+const TMS=new Float32Array(NT),TM1=new Float32Array(NT),TQR=Array.from({length:NT},()=>new THREE.Quaternion());
+let qMax=1,TN=0,Tkids=[],growTicks=0,growAcc=0,grown=false,attr=[],rootTips=[],nut=[],trunkTop=0,heart=0,Tsched=[],pMax=1,gust=0,heading=0,rootN=0,ptick=0,tips=[];const Tbeads=[],BM2=500;
+const SE={kin:0,spring:0,grav:0,flux:0,att:0,free:0};
+const FRUIT=REG.map((r,i)=>{const a=i/6*6.2832+.5;return new THREE.Vector3(Math.cos(a)*2.25,2.85+.5*Math.sin(i*2.3),Math.sin(a)*2.25);});
+const FRC=FRUIT.map(f=>f.clone()),FRn=new Uint16Array(6);
+const gf=()=>grown?1:Math.min(1,growTicks/GROW_N);
+function addNode(p,x,y,z,root){if(TN>=NT)return -1;const i=TN++,j=i*3;TRP[j]=x;TRP[j+1]=y;TRP[j+2]=z;TP[i]=p;TROOT[i]=root;TB[i]=S.t;TY0[i]=y;Tkids[i]=[];Tv[i]=-1.2;Tw[i]=-.6;TIs[i]=Ttr[i]=Tact[i]=TG[i]=TPr[i]=TQ[i]=0;TW[i]=1;TNL[i]=0;Tvis[i]=0;TREG[i]=-1;TV[j]=TV[j+1]=TV[j+2]=0;TR[i]=.012;
+ if(p>=0){const pj=p*3;TO[j]=x-TRP[pj];TO[j+1]=y-TRP[pj+1];TO[j+2]=z-TRP[pj+2];TL[i]=Math.hypot(TO[j],TO[j+1],TO[j+2]);Tkids[p].push(i);TX[j]=TX[pj];TX[j+1]=TX[pj+1];TX[j+2]=TX[pj+2];}else TL[i]=0;
+ if(root||p<0){TX[j]=x;TX[j+1]=y;TX[j+2]=z;}return i;}
+function nutVal(x,y,z){let s=0;for(const n of nut)s+=n.a*Math.exp(-((x-n.x)**2+(y-n.y)**2+(z-n.z)**2)/(n.s*n.s));return s;}
+function nutGrad(x,y,z){const g=[0,0,0];for(const n of nut){const ax=n.x-x,ay=n.y-y,az=n.z-z,e=n.a*Math.exp(-(ax*ax+ay*ay+az*az)/(n.s*n.s))*2/(n.s*n.s);g[0]+=ax*e;g[1]+=ay*e;g[2]+=az*e;}return g;}
+function seedTree(){TN=0;Tkids=[];grown=false;growTicks=0;growAcc=0;Tsched=[];Tbeads.length=0;rootN=0;
+ const b=addNode(-1,0,GROUND,0,1);trunkTop=b;heart=b;attr=[];
+ if(RG.length){const sc=[1.1,1.4,1.7][QL];for(const r of RG){const n=Math.round(sc*(2+3*Math.log10(r.syn/1e4))),sg=.3*Math.cbrt(r.vol||1e5)*1000*FWS.s;for(let k=0;k<Math.max(2,n);k++)attr.push([r.p[0]+gauss()*sg,r.p[1]+gauss()*sg,r.p[2]+gauss()*sg]);}}   // space-colonization targets = real neuropil positions (count ∝ log synapses, spread ∝ ∛volume)
+ else for(let k=0;k<[240,340,440][QL];k++){let x,y,z;do{x=rnd(-1,1);y=rnd(-1,1);z=rnd(-1,1);}while(x*x+y*y+z*z>1);attr.push([x*2.5,2.75+y*1.4,z*2.5]);}
+ if(!RG.length)FRUIT.forEach(f=>{for(let k=0;k<[24,32,40][QL];k++)attr.push([f.x+gauss()*.3,f.y+gauss()*.26,f.z+gauss()*.3]);});   // the six themes attract growth: they become the fruit
+ nut=[];for(let k=0;k<10;k++){const a=rnd(0,6.28),r=rnd(.6,2.6);nut.push({x:Math.cos(a)*r,y:GROUND-rnd(.5,1.9),z:Math.sin(a)*r,a:rnd(.6,1),s:rnd(.7,1.1)});}
+ rootTips=[];for(let k=0;k<7;k++){const a=k/7*6.28+rnd(0,.5);rootTips.push({i:b,d:[Math.cos(a)*.9,-.45,Math.sin(a)*.9]});}
+ LS.fill(0);TNL.fill(0);LWn.fill(0);TRN.fill(-1);pathsAt=-1;DEC.log=[];treeParams();}
+function growTick(){growTicks++;const n0=TN,dir=new Float32Array(n0*3),cnt=new Uint16Array(n0);let any=false;
+ // canopy: space colonization (each attractor pulls its nearest node; reached attractors are removed)
+ for(let a=attr.length-1;a>=0;a--){const A=attr[a];let best=-1,bd=DI*DI;for(let i=0;i<n0;i++){if(TROOT[i]&&i)continue;const ax=A[0]-TRP[i*3],ay=A[1]-TRP[i*3+1],az=A[2]-TRP[i*3+2],d=ax*ax+ay*ay+az*az;if(d<bd){bd=d;best=i;}}
+  if(best<0)continue;if(bd<DK*DK){attr.splice(a,1);continue;}any=true;const d=Math.sqrt(bd);dir[best*3]+=(A[0]-TRP[best*3])/d;dir[best*3+1]+=(A[1]-TRP[best*3+1])/d;dir[best*3+2]+=(A[2]-TRP[best*3+2])/d;cnt[best]++;}
+ if(!any){const t=trunkTop,j=addNode(t,TRP[t*3]+gauss()*.015,TRP[t*3+1]+DL,TRP[t*3+2]+gauss()*.015,0);if(j>=0)trunkTop=j;}
+ else{const ord=[];for(let i=0;i<n0;i++)if(cnt[i])ord.push(i);ord.sort(()=>Math.random()-.5);ord.length=Math.min(ord.length,Math.ceil((NT*.82-TN)/Math.max(1,GROW_N-growTicks))+1);for(const i of ord){const x=dir[i*3],y=dir[i*3+1]+.2*cnt[i],z=dir[i*3+2],l=Math.hypot(x,y,z)||1;if(TN<NT-30)addNode(i,TRP[i*3]+x/l*DL,TRP[i*3+1]+y/l*DL,TRP[i*3+2]+z/l*DL,0);}}
+ // roots: tips climb the nutrient gradient (plus gravitropism); uptake depletes the field
+ if(growTicks%2)return;const nt=[];for(const r of rootTips){if(rootN>NT*.15||TN>=NT-2)break;const i=r.i,x=TRP[i*3],y=TRP[i*3+1],z=TRP[i*3+2],g=nutGrad(x,y,z),gl=Math.hypot(g[0],g[1],g[2])||1e-9;
+  if(growTicks>10&&nutVal(x,y,z)<.03)continue;
+  let d=[r.d[0]*.6+g[0]/gl*.32+gauss()*.15,r.d[1]*.6+g[1]/gl*.32-.12+gauss()*.15,r.d[2]*.6+g[2]/gl*.32+gauss()*.15];const l=Math.hypot(...d);d=d.map(v=>v/l);
+  const j=addNode(i,x+d[0]*.14,Math.min(GROUND-.03,y+d[1]*.14),z+d[2]*.14,1);if(j<0)continue;rootN++;
+  for(const n of nut){const q=Math.exp(-((n.x-x)**2+(n.y-y)**2+(n.z-z)**2)/(n.s*n.s));n.a*=1-.035*q;}
+  nt.push({i:j,d});if(Math.random()<.08&&nt.length<14)nt.push({i:j,d:[d[0]+gauss()*.7,d[1],d[2]+gauss()*.7]});}
+ rootTips=nt;}
+function treeParams(){for(let i=TN-1;i>=0;i--){const k=Tkids[i];let s=0;for(const c of k)if(i>0||!TROOT[c])s+=TR[c]**3;TR[i]=s?Math.cbrt(s):(TROOT[i]?.009:.012);Tdeg[i]=k.length+(TP[i]>=0?1:0);}   // Murray: r³ = Σ r_child³
+ for(let i=1;i<TN;i++){const l=Math.max(TL[i],.03),r=TR[i];TM[i]=Math.PI*r*r*l*40+Math.max(0,TNL[i])*.0012;TMS[i]=TM[i];TM1[i]=0;}
+ for(let i=TN-1;i>0;i--)if(!TROOT[i]&&TP[i]>0){TMS[TP[i]]+=TMS[i];TM1[TP[i]]+=TM1[i]+TMS[i]*TL[i];}   // mass carried by each joint
+ for(let i=1;i<TN;i++){const l=Math.max(TL[i],.03),r=TR[i];const kb=KB*40*r**4/l**3,kl=25*GRAV*TMS[i]/l;   // bending stiffness, raised where needed to carry the load above (no buckling)
+  const w2=Math.min(8000,Math.max(9,Math.max(kb,kl)/TMS[i]));TK[i]=TMS[i]*w2;TC[i]=2*ZETA*Math.sqrt(TK[i]*TMS[i]);   // inertia of a joint = the whole subtree it swings
+  if(!TROOT[i]&&!RG.length){let b=-1,bd=1.6*1.6;FRUIT.forEach((f,q)=>{const d=(f.x-TRP[i*3])**2+(f.y-TRP[i*3+1])**2+(f.z-TRP[i*3+2])**2;if(d<bd){bd=d;b=q;}});TREG[i]=b;}}
+ let hb=1e9;for(let i=0;i<TN;i++){if(TROOT[i]&&i)continue;const d=Math.abs(TRP[i*3+1]-CORE_Y)+Math.hypot(TRP[i*3],TRP[i*3+2]);if(d<hb){hb=d;heart=i;}}}
+// wind: uniform drift + curl of a vector potential (divergence-free) scaled by an Ornstein–Uhlenbeck gust
+const WU=[0,0,0];
+function windAt(x,y,z,t){const U=.35+Math.max(0,gust)*.8+S.voice*.6;WU[0]=Math.cos(heading)*U+.3*(.75*Math.cos(.75*y+.21*t)-.8*Math.cos(.8*z+.27*t));WU[1]=.3*(.7*Math.cos(.7*z-.23*t)-.85*Math.cos(.85*x-.29*t));WU[2]=Math.sin(heading)*U+.3*(.6*Math.cos(.6*x+.19*t)-.9*Math.cos(.9*y+.31*t));return WU;}
+const qv=new THREE.Vector3(),qa=new THREE.Vector3(),qb=new THREE.Vector3(),YAX=new THREE.Vector3(0,1,0);
+function treeStep(h,t){if(TN<2)return;gust+=(-gust/2.5)*h+.75*Math.sqrt(h)*gauss();heading+=h*.015;
+
+ TF.fill(0,0,TN*3);let pes=0,peg=0,ke=0;
+ for(let i=1;i<TN;i++){if(TROOT[i])continue;const p=TP[i],j=i*3,pj=p*3,gr=Math.min(1,(t-TB[i])/.7);
+  qv.set(TO[j]*gr,TO[j+1]*gr,TO[j+2]*gr);   // joint spring: potential ½k|x_i − x_p − o_i|² (small-angle bending about the rest direction)
+  const ex=TX[j]-TX[pj]-qv.x,ey=TX[j+1]-TX[pj+1]-qv.y,ez=TX[j+2]-TX[pj+2]-qv.z,rx=TV[j]-TV[pj],ry=TV[j+1]-TV[pj+1],rz=TV[j+2]-TV[pj+2];
+  const fx=-TK[i]*ex-TC[i]*rx,fy=-TK[i]*ey-TC[i]*ry,fz=-TK[i]*ez-TC[i]*rz;pes+=.5*TK[i]*(ex*ex+ey*ey+ez*ez);
+  const w=windAt(TX[j],TX[j+1],TX[j+2],t),wx=w[0]-TV[j],wy=w[1]-TV[j+1],wz=w[2]-TV[j+2],wm=Math.hypot(wx,wy,wz),A=(2*TR[i]*TL[i]+Math.max(0,TNL[i])*.006)*gr*1.6;
+  TF[j]+=fx+A*wm*wx;TF[j+1]+=fy+A*wm*wy-TM[i]*GRAV;TF[j+2]+=fz+A*wm*wz;
+  if(p>0&&!TROOT[p]){TF[pj]-=fx;TF[pj+1]-=fy;TF[pj+2]-=fz;}                                        // Newton III: the child loads its parent (coupled sway)
+  peg+=TM[i]*GRAV*(TX[j+1]-TY0[i]);}
+ for(let i=1;i<TN;i++){if(TROOT[i])continue;const j=i*3,im=h/TMS[i];TV[j]+=TF[j]*im;TV[j+1]+=TF[j+1]*im;TV[j+2]+=TF[j+2]*im;TX[j]+=TV[j]*h;TX[j+1]+=TV[j+1]*h;TX[j+2]+=TV[j+2]*h;ke+=.5*TM[i]*(TV[j]**2+TV[j+1]**2+TV[j+2]**2);}
+ for(let i=1;i<TN;i++){if(TROOT[i])continue;const p=TP[i],j=i*3,pj=p*3,L0=TL[i]*Math.min(1,(t-TB[i])/.7),ax=TX[j]-TX[pj],ay=TX[j+1]-TX[pj+1],az=TX[j+2]-TX[pj+2],d=Math.hypot(ax,ay,az);if(d<1e-6)continue;
+  const s=L0/d;TX[j]=TX[pj]+ax*s;TX[j+1]=TX[pj+1]+ay*s;TX[j+2]=TX[pj+2]+az*s;const rv=((TV[j]-TV[pj])*ax+(TV[j+1]-TV[pj+1])*ay+(TV[j+2]-TV[pj+2])*az)/(d*d);TV[j]-=rv*ax;TV[j+1]-=rv*ay;TV[j+2]-=rv*az;}   // rigid segment length
+ SE.kin=ke;SE.spring=pes;SE.grav=peg;}
+// sap: Poiseuille network, Q = g·Δp with g ∝ r⁴/l; root tips inject (nutrient uptake), leafy tips transpire
+const gcond=i=>Math.pow(TR[i]/.012,4)/Math.max(TL[i],.03)*.05*(1+2*LWn[i]);   // Poiseuille, scaled by the real synapse load routed through this segment
+function sapSolve(it){if(TN<2)return;for(let n=0;n<it;n++)for(let i=0;i<TN;i++){let num=TSRC[i],den=0;const k=Tkids[i];
+  if(TP[i]>=0){const g=gcond(i);num+=g*TPr[TP[i]];den+=g;}for(const c of k){const g=gcond(c);num+=g*TPr[c];den+=g;}
+  den+=TROOT[i]?0:(.002+(k.length?0:Math.max(0,TNL[i])*.02+.01));TPr[i]=den>0?num/den:0;}
+ let fl=0,pm=1e-6,qm=1e-6;for(let i=1;i<TN;i++){TQ[i]=gcond(i)*(TPr[TP[i]]-TPr[i]);fl+=Math.abs(TQ[i]);qm=Math.max(qm,Math.abs(TQ[i]));if(TPr[i]>pm)pm=TPr[i];}SE.flux=fl;pMax+=(pm-pMax)*.1;qMax+=(qm-qMax)*.1;}
+function treeIgnite(t){S.C=0;S.ign=true;S.ignN++;S.lastIgn=t;emit('ignite',{});coreKick(.35);
+ // energy wave from the heart; local speed depends on the medium: c = l·√(k/m) in wood (clamped), slow in soil
+ const T=new Float32Array(TN).fill(-1);T[heart]=0;const st=[heart];let top=heart;
+ while(st.length){const i=st.pop(),nb=Tkids[i].slice();if(TP[i]>=0)nb.push(TP[i]);for(const j of nb){if(T[j]>=0)continue;const e=TP[j]===i?j:i,c=TROOT[e]?.9:Math.min(8,Math.max(1.6,.6*TL[e]*Math.sqrt(TK[e]/TMS[e])));T[j]=T[i]+TL[e]/c;st.push(j);}}
+ for(let i=0;i<TN;i++)if(T[i]>=0){Tsched.push([t+T[i],i,.8,1]);if(!TROOT[i]&&TX[i*3+1]>TX[top*3+1])top=i;}
+ S.waveT=t+T[top];}
+// leaves: attached (flutter on a torsional spring) → detach under gust or bloom → free flight with drag, lift, curl wind, collisions
+const NL=[500,900,1400][QL],LX=new Float32Array(NL*3),LV=new Float32Array(NL*3),LO=new Float32Array(NL*3),LA=new Int32Array(NL).fill(-1),LS=new Uint8Array(NL),LTH=new Float32Array(NL),LOM=new Float32Array(NL),LT=new Float32Array(NL),LAL=new Float32Array(NL),LREG=new Int8Array(NL);
+const HASH=new Map(),HC=.4;
+function buildHash(){HASH.clear();for(let i=1;i<TN;i++){if(TROOT[i])continue;const j=i*3,k=Math.floor(TX[j]/HC)+','+Math.floor(TX[j+1]/HC)+','+Math.floor(TX[j+2]/HC);let a=HASH.get(k);if(!a)HASH.set(k,a=[]);a.push(i);}}
+function collide(l){const j=l*3,cx=Math.floor(LX[j]/HC),cy=Math.floor(LX[j+1]/HC),cz=Math.floor(LX[j+2]/HC);
+ for(let a=-1;a<=1;a++)for(let b=-1;b<=1;b++)for(let c=-1;c<=1;c++){const arr=HASH.get((cx+a)+','+(cy+b)+','+(cz+c));if(!arr)continue;
+  for(const i of arr){const p=TP[i],ij=i*3,pj=p*3,sx=TX[ij]-TX[pj],sy=TX[ij+1]-TX[pj+1],sz=TX[ij+2]-TX[pj+2],s2=sx*sx+sy*sy+sz*sz;if(s2<1e-8)continue;
+   const u=Math.max(0,Math.min(1,((LX[j]-TX[pj])*sx+(LX[j+1]-TX[pj+1])*sy+(LX[j+2]-TX[pj+2])*sz)/s2)),qx=LX[j]-TX[pj]-sx*u,qy=LX[j+1]-TX[pj+1]-sy*u,qz=LX[j+2]-TX[pj+2]-sz*u,d=Math.hypot(qx,qy,qz),R=TR[i]*1.1+.02;
+   if(d<R&&d>1e-6){const nx=qx/d,ny=qy/d,nz=qz/d;LX[j]+=nx*(R-d);LX[j+1]+=ny*(R-d);LX[j+2]+=nz*(R-d);const vn=(LV[j]-TV[ij])*nx+(LV[j+1]-TV[ij+1])*ny+(LV[j+2]-TV[ij+2])*nz;
+    if(vn<0){LV[j]-=1.35*vn*nx;LV[j+1]-=1.35*vn*ny;LV[j+2]-=1.35*vn*nz;SE.hits=(SE.hits||0)+1;}}}}}
+function leafStep(h,t){let att=0,fr=0,spawn=grown?6:Math.floor(gf()*5);
+ for(let l=0;l<NL;l++){const j=l*3;
+  if(LS[l]===0){LAL[l]=0;if(spawn>0&&tips.length){const a=tips[Math.floor(Math.random()*tips.length)];if(TNL[a]<5){LS[l]=1;LA[l]=a;TNL[a]++;LREG[l]=TREG[a];LO[j]=gauss()*.05;LO[j+1]=Math.abs(gauss())*.04;LO[j+2]=gauss()*.05;LTH[l]=rnd(-1,1);LOM[l]=0;LT[l]=t;spawn--;}}continue;}
+  if(LS[l]===1){const a=LA[l],aj=a*3;if(a>=TN){LS[l]=0;continue;}
+   LX[j]=TX[aj]+LO[j];LX[j+1]=TX[aj+1]+LO[j+1];LX[j+2]=TX[aj+2]+LO[j+2];LV[j]=TV[aj];LV[j+1]=TV[aj+1];LV[j+2]=TV[aj+2];
+   const w=windAt(LX[j],LX[j+1],LX[j+2],t),rx=w[0]-LV[j],ry=w[1]-LV[j+1],rz=w[2]-LV[j+2],m2=rx*rx+ry*ry+rz*rz;
+   LOM[l]+=(-14*Math.sin(LTH[l])-1.5*LOM[l]+m2*3*Math.sin(t*9+l))*h;LTH[l]+=LOM[l]*h;LAL[l]=Math.min(1,LAL[l]+h*1.2);
+   const bloom=TG[a]>.9&&Math.random()<.05;if(m2*(.6+Math.random())>7||bloom){LS[l]=2;TNL[a]--;LT[l]=t;if(bloom)LV[j+1]+=.7;}att++;continue;}
+  const w=windAt(LX[j],LX[j+1],LX[j+2],t),rx=w[0]-LV[j],ry=w[1]-LV[j+1],rz=w[2]-LV[j+2],m=Math.hypot(rx,ry,rz),mh=Math.hypot(rx,rz)||1e-6;
+  LOM[l]+=(-6*Math.sin(2*LTH[l])*(.2+m)-.8*LOM[l]+gauss()*4)*h;LTH[l]+=LOM[l]*h;            // flutter
+  const cl=.9*m*m,s2=Math.sin(2*LTH[l]),cs=Math.cos(LTH[l]);
+  LV[j]+=(2.2*m*rx-cl*.5*cs*rz/mh)*h;LV[j+1]+=(2.2*m*ry+cl*s2*.6-.9)*h;LV[j+2]+=(2.2*m*rz+cl*.5*cs*rx/mh)*h;   // drag + lift + gravity
+  LX[j]+=LV[j]*h;LX[j+1]+=LV[j+1]*h;LX[j+2]+=LV[j+2]*h;collide(l);
+  if(LX[j+1]<GROUND){LX[j+1]=GROUND;LV[j]*=.5;LV[j+1]=0;LV[j+2]*=.5;}
+  const age=t-LT[l];LAL[l]=Math.max(0,Math.min(1,(14-age)/3));if(age>14||Math.abs(LX[j])>10||LX[j+1]>10)LS[l]=0;fr++;}
+ SE.att=att;SE.free=fr;}
+// canopy → cosmic web: dust leaves the tips and falls into the web's clusters under their gravity
+const ND=[600,1100,1800][QL],DXp=new Float32Array(ND*3),DVv=new Float32Array(ND*3),DT0=new Float32Array(ND).fill(-99),DR=new Int8Array(ND);const WN=[];
+function dustStep(h,t){WN.length=0;const s=webG.scale.x;for(const n of nodes.slice(0,30))WN.push([n.x*s+webG.position.x,n.y*s+webG.position.y,n.z*s+webG.position.z,n.mass]);
+ for(let d=0;d<ND;d++){const j=d*3;let age=t-DT0[d];
+  if(age>16||age<0){if(!tips.length||Math.random()>.03*gf())continue;const a=tips[Math.floor(Math.random()*tips.length)];DXp[j]=TX[a*3]+gauss()*.03;DXp[j+1]=TX[a*3+1]+gauss()*.03;DXp[j+2]=TX[a*3+2]+gauss()*.03;DVv[j]=gauss()*.1;DVv[j+1]=.25+Math.random()*.2;DVv[j+2]=gauss()*.1;DT0[d]=t;DR[d]=TREG[a];age=0;}
+  const w=windAt(DXp[j],DXp[j+1],DXp[j+2],t);let ax=(w[0]-DVv[j])*.4,ay=(w[1]-DVv[j+1])*.4+.25*Math.exp(-age/5),az=(w[2]-DVv[j+2])*.4;
+  for(const n of WN){const dx_=n[0]-DXp[j],dy=n[1]-DXp[j+1],dz=n[2]-DXp[j+2],r2=dx_*dx_+dy*dy+dz*dz+.35,f=.06*n[3]/(r2*Math.sqrt(r2));ax+=dx_*f;ay+=dy*f;az+=dz*f;}
+  DVv[j]=(DVv[j]+ax*h)*Math.exp(-.3*h);DVv[j+1]=(DVv[j+1]+ay*h)*Math.exp(-.3*h);DVv[j+2]=(DVv[j+2]+az*h)*Math.exp(-.3*h);DXp[j]+=DVv[j]*h;DXp[j+1]+=DVv[j+1]*h;DXp[j+2]+=DVv[j+2]*h;}}
+// attention spark walks branch to branch (junction to junction), choosing by salience
+/* ===== 6. FLYWIRE v783 GROUNDING · physics.md §15 =====
+   Real data: data/flywire-neuropils.json (see data/SOURCES.md). Connectome data: FlyWire (flywire.ai), Dorkenwald et al. 2024; Schlegel et al. 2024; CC-BY 4.0.
+   Themes → real neuropil groups (a design mapping, documented in physics.md §15):
+     practice  = premotor / output: LAL VES SPS IPS GNG EPA GOR CAN FLA PRW SAD
+     sacred    = central complex (the fly's geometric compass): FB EB PB NO BU GA
+     kerala    = lateral horn + superior protocerebrum (innate, context): LH SLP SIP SMP CRE
+     nature    = senses: ME LO LOP LA AME (vision) · AL (smell) · AMMC WED (hearing/mechanosensation)
+     bim       = mushroom body (memory, precise learned associations): MB_CA MB_PED MB_VL MB_ML
+     story     = integrative protocerebrum: AVLP PVLP PLP AOTU SCL ICL IB ATL OCG */
+const THEME_GROUPS={practice:['LAL','VES','SPS','IPS','GNG','EPA','GOR','CAN','FLA','PRW','SAD'],sacred:['FB','EB','PB','NO','BU','GA'],kerala:['LH','SLP','SIP','SMP','CRE'],nature:['ME','LO','LOP','LA','AME','AL','AMMC','WED'],bim:['MB_CA','MB_PED','MB_VL','MB_ML'],story:['AVLP','PVLP','PLP','AOTU','SCL','ICL','IB','ATL','OCG']};
+const nbase=n=>n.replace(/_(L|R)$/,''),themeOf=n=>REG.findIndex(r=>(THEME_GROUPS[r[0]]||[]).includes(nbase(n)));
+let FW=null,FWS=null,RG=[],RIDX={},LINKS=[],NEU=[],GRP=[[],[],[]],Rsched=[],LWn=new Float32Array(NT),TRN=new Int16Array(NT).fill(-1),pathsAt=-1;
+function fwPos(c){return [(c[0]-FWS.m[0])*FWS.s,2.75-(c[1]-FWS.m[1])*FWS.s,(c[2]-FWS.m[2])*FWS.s];}   // FlyWire y points ventral → flip so dorsal is up
+async function fwLoad(){try{const r=await fetch('data/flywire-neuropils.json');if(!r.ok)throw 0;FW=await r.json();}catch(e){$('#credit').innerHTML='FlyWire data: <b>not connected yet</b> (data/flywire-neuropils.json could not be loaded)';return false;}
+ const C=FW.regions.filter(r=>r.centroid_nm),m=[0,0,0];C.forEach(r=>{for(let k=0;k<3;k++)m[k]+=r.centroid_nm[k]/C.length;});let ext=0;C.forEach(r=>ext=Math.max(ext,Math.abs(r.centroid_nm[0]-m[0])));FWS={m,s:2.6/ext};
+ RG=C.map(r=>({name:r.name,syn:r.synapses,vol:r.mesh_volume_um3,p:fwPos(r.centroid_nm),theme:themeOf(r.name),hub:-1,v:-1.2,w:-.6,Is:0,tr:0,act:0,rate:0,inp:0,visits:0,nE:0,nI:0,sgn:1,out:[],inn:[]}));RG.forEach((r,i)=>RIDX[r.name]=i);
+ for(const n of FW.neurons){const i=RIDX[n.np];if(i===undefined)continue;if(n.nt==='acetylcholine'||n.nt==='glutamate')RG[i].nE++;else if(n.nt==='gaba')RG[i].nI++;}
+ RG.forEach(r=>r.sgn=(r.nE+r.nI)?(r.nE-r.nI)/(r.nE+r.nI):1);   // net sign of a region's output from its sampled neurons (no sample → treated as excitatory, flagged in physics.md)
+ const lw=FW.region_edges.map(e=>Math.log10(e[2])),lo=Math.min(...lw),hi=Math.max(...lw);
+ FW.region_edges.forEach((e,k)=>{const a=RIDX[e[0]],b=RIDX[e[1]];if(a===undefined||b===undefined)return;LINKS.push({a,b,w:e[2],wn:.2+.8*(lw[k]-lo)/(hi-lo),W:1,path:null,segs:null,len:1});RG[a].out.push(LINKS.length-1);RG[b].inn.push(LINKS.length-1);});
+ const stride=[3,2,1][QL];NEU=FW.neurons.filter((n,i)=>n.p&&i%stride===0).map(n=>({p:fwPos(n.p),r:RIDX[n.np]??-1,nt:n.nt,node:-1,off:[0,0,0]}));
+ RG.forEach((r,i)=>{const b=r.name;if(/^MB_/.test(b))GRP[0].push(i);else if(['FB','EB','PB','NO'].includes(b))GRP[1].push(i);else if(/^LH_/.test(b))GRP[2].push(i);});
+ window.__fw={regions:RG.length,links:LINKS.length,neurons:NEU.length};return true;}
+function treePath(a,b){const A=new Set();let x=a;while(x>=0){A.add(x);x=TP[x];}const pb=[];x=b;while(x>=0&&!A.has(x)){pb.push(x);x=TP[x];}if(x<0)return null;const pa=[];let y=a;while(y!==x){pa.push(y);y=TP[y];}pa.push(x);return pa.concat(pb.reverse());}
+function assignHubs(){if(!RG.length)return;
+ for(const r of RG){let b=-1,bd=1e9;for(let i=1;i<TN;i++){if(TROOT[i])continue;const d=(TRP[i*3]-r.p[0])**2+(TRP[i*3+1]-r.p[1])**2+(TRP[i*3+2]-r.p[2])**2;if(d<bd){bd=d;b=i;}}r.hub=b;r.hubD=Math.sqrt(bd);}
+ for(let i=0;i<TN;i++){TRN[i]=-1;TREG[i]=-1;if(TROOT[i])continue;let b=-1,bd=.7*.7;RG.forEach((r,q)=>{const d=(TRP[i*3]-r.p[0])**2+(TRP[i*3+1]-r.p[1])**2+(TRP[i*3+2]-r.p[2])**2;if(d<bd){bd=d;b=q;}});TRN[i]=b;TREG[i]=b>=0?RG[b].theme:-1;}
+ // real links → branch paths; synapse load per segment (log scale) scales conductance and thickness
+ const LW=new Float32Array(TN);for(const L of LINKS){const A=RG[L.a].hub,B=RG[L.b].hub;L.path=A>0&&B>0&&A!==B?treePath(A,B):null;L.segs=null;if(!L.path)continue;L.segs=[];let len=0;
+  for(let k=0;k<L.path.length-1;k++){const u=L.path[k],v=L.path[k+1],c=TP[u]===v?u:v;L.segs.push([c,TP[u]===v?0:1]);len+=TL[c];LW[c]+=Math.log10(L.w);}L.len=Math.max(.2,len);}
+ let mx=1e-6;for(let i=0;i<TN;i++)mx=Math.max(mx,LW[i]);for(let i=0;i<TN;i++)LWn[i]=LW[i]/mx;pathsAt=TN;}
+function bindNeurons(){for(const n of NEU){let b=-1,bd=1e9;for(let i=1;i<TN;i++){if(TROOT[i])continue;const d=(TRP[i*3]-n.p[0])**2+(TRP[i*3+1]-n.p[1])**2+(TRP[i*3+2]-n.p[2])**2;if(d<bd){bd=d;b=i;}}n.node=b;n.off=[n.p[0]-TRP[b*3],n.p[1]-TRP[b*3+1],n.p[2]-TRP[b*3+2]];}}
+// sensory input (pointer → optic lobes ME/LO/LOP on that screen side; voice + site section → antennal lobes; attention → its region + ipsilateral medulla)
+let ptrSide='L';addEventListener('pointermove',e=>{S.ptr=Math.min(1.5,(S.ptr||0)+Math.hypot(e.movementX||0,e.movementY||0)/300);ptrSide=e.clientX<innerWidth/2?'L':'R';});
+function sensory(){if(!RG.length)return;RG.forEach(r=>r.inp=0);const add=(n,v)=>{const i=RIDX[n];if(i!==undefined)RG[i].inp+=v;};
+ add('ME_L',.25);add('ME_R',.25);                                                           // ambient light (model constant)
+ for(const n of ['ME_','LO_','LOP_'])add(n+ptrSide,.5*(S.ptr||0));
+ const sec=.4*Math.tanh(S.Sin)+.6*S.voice;add('AL_L',sec);add('AL_R',sec);
+ const ar=TRN[tsp.cur];if(ar>=0){RG[ar].inp+=.12;add('ME_'+(RG[ar].p[0]<0?'L':'R'),.1);}
+ if(focusC>=0||hoverC>=0){const th=focusC>=0?focusC:hoverC;RG.forEach(r=>{if(r.theme===th)r.inp+=.06;});}}
+// region-level FitzHugh–Nagumo units coupled only through the 600 real links, weighted by log synapse count and signed by neurotransmitter
+function treeNeural(h,t){const tau=5,eps=.08;S.ptr=(S.ptr||0)*Math.exp(-h*2);
+ let w=0;for(let q=0;q<Tsched.length;q++){const e=Tsched[q];if(e[0]<=t){if(e[1]<TN)TG[e[1]]=1;}else Tsched[w++]=e;}Tsched.length=w;
+ w=0;for(let q=0;q<Rsched.length;q++){const e=Rsched[q];if(e[0]<=t)RG[e[1]].Is+=e[2];else Rsched[w++]=e;}Rsched.length=w;
+ if((treeNeural.k=(treeNeural.k||0)+1)%4===0)sensory();
+ const sr=new Float32Array(6),si=new Float32Array(6),cnt=new Float32Array(6),rt=new Float32Array(6);
+ RG.forEach((r,i)=>{const I=.24+r.inp+r.Is+gauss()*.05,v=r.v,dv=tau*(v-v*v*v/3-r.w+I);r.v+=dv*h;r.w+=tau*eps*(v+.7-.8*r.w)*h;
+  if(v<1&&r.v>=1)rspike(i,t);r.Is*=Math.exp(-h/.12);r.tr*=Math.exp(-h/.4);r.act*=Math.exp(-h*2.5);r.rate*=Math.exp(-h);
+  if(r.theme>=0){const th=Math.atan2(r.w,r.v);sr[r.theme]+=Math.cos(th);si[r.theme]+=Math.sin(th);cnt[r.theme]++;rt[r.theme]+=r.rate;}});
+ for(const L of LINKS)L.W+=(1-L.W)*h/90;
+ let Sx=0,nr=0;for(let k=0;k<6;k++)if(cnt[k]){rc[k]=Math.hypot(sr[k],si[k])/cnt[k];rate[k]=rt[k]/cnt[k];Sx+=rc[k]*Math.min(1,rate[k]/1.2);nr++;}
+ for(let i=0;i<TN;i++){Tact[i]=TRN[i]>=0?RG[TRN[i]].act:Tact[i]*Math.exp(-h*3);TG[i]*=Math.exp(-h*.7);}
+ S.C=(S.C||0)+h/20*Math.min(1.5,Math.max(.5,SE.flux/30));
+ Sx=(nr?Sx/nr:0)+.35*S.C+.35*Math.tanh(S.Sin)+S.voice*.4;S.Sx=Sx;
+ S.G+=(-S.G+sig(10*(Sx+.9*S.G-2*S.Ad-TREE_TH)))*h/.35;S.Ad+=(S.G-S.Ad)*h/3;S.Sin*=Math.exp(-h/1.5);
+ if(!S.ign&&S.G>.6&&t-S.lastIgn>10&&grown)treeIgnite(t);if(S.ign&&S.G<.25){S.ign=false;emit('release',{});}
+ decide(h,t);}
+function rspike(i,t){const r=RG[i];r.tr+=1;r.act=1;r.rate+=1;
+ for(const k of r.out){const L=LINKS[k],T=L.len/2.5+.03;Rsched.push([t+T,L.b,2.0*L.wn*L.W*r.sgn,k]);if(L.segs&&Tbeads.length<BM2)Tbeads.push([k,0,t,T]);}
+ for(const k of r.inn){const L=LINKS[k];L.W=Math.min(3,L.W+.04*RG[L.a].tr);}}   // Hebbian: pre-before-post strengthens the real link
+// decisions: leaky competing accumulators (Usher–McClelland) for mushroom body (recall) · central complex (explore) · lateral horn (react)
+const DEC={F:[0,0,0],X:[0,0,0],ev:[0,0,0],last:-9,mode:'—',log:[],n:0},MODES=['recall','explore','react'],GNAME=['mushroom body','central complex','lateral horn'],DTH=.5;
+function decide(h,t){if(!RG.length||!grown)return;const all=RG.reduce((s,r)=>s+r.rate,0)/RG.length,F=DEC.F;for(let k=0;k<3;k++)F[k]*=Math.exp(-h/6);
+ const ev=GRP.map((g,k)=>Math.min(3,(g.length?g.reduce((s,i)=>s+RG[i].rate,0)/g.length:0)/(all+.05))*(1-Math.min(.8,F[k])));DEC.ev=ev;   // evidence = group rate relative to the whole brain, reduced by choice adaptation
+ const X=DEC.X,sum=X[0]+X[1]+X[2];
+ for(let k=0;k<3;k++)X[k]=Math.max(0,X[k]+(.6*ev[k]-X[k]-.5*(sum-X[k]))*h+.18*Math.sqrt(h)*gauss());
+ let k=0;for(let q=1;q<3;q++)if(X[q]>X[k])k=q;if(X[k]>DTH&&t-DEC.last>1.5&&!tsp.path.length)commit(k,t);}
+function commit(k,t){const ev=DEC.ev.map(v=>+v.toFixed(2)),Xs=DEC.X.map(v=>+v.toFixed(2));let tgt=-1,reason='',L0=null;
+ if(k===0){let bs=-1;for(const g of GRP[0])for(const q of RG[g].out){const L=LINKS[q];if(GRP[0].includes(L.b)||!L.segs)continue;const s=L.wn*L.W*(.5+RG[L.b].rate);if(s>bs){bs=s;tgt=L.b;L0=L;}}
+  if(L0)reason=`strongest learned mushroom-body link ${RG[L0.a].name}→${RG[L0.b].name} (${L0.w.toLocaleString()} synapses, Hebbian W ${L0.W.toFixed(2)})`;}
+ else if(k===1){let bs=-1;RG.forEach((r,i)=>{if(r.hub<0||r.theme<0)return;const s=(1-cov[r.theme])+1/(1+r.visits)+.1*Math.log10(r.syn);if(s>bs){bs=s;tgt=i;}});
+  if(tgt>=0)reason=`least-attended region: ${RG[tgt].name} (${RG[tgt].visits} visits, ${REG[RG[tgt].theme][1]} coverage ${Math.round(cov[RG[tgt].theme]*100)}%)`;}
+ else{let bs=-1;for(const g of GRP[2])for(const q of RG[g].out){const L=LINKS[q];if(!L.segs)continue;const s=RG[L.b].rate*L.wn;if(s>bs){bs=s;tgt=L.b;L0=L;}}
+  if(L0)reason=`innate output ${RG[L0.a].name}→${RG[L0.b].name}, the most active target (rate ${RG[L0.b].rate.toFixed(2)}/s, ${L0.w.toLocaleString()} synapses)`;}
+ DEC.X=DEC.X.map(v=>v*.2);DEC.last=t;DEC.F[k]+=.5;if(tgt<0||RG[tgt].hub<0)return;
+ for(const g of GRP[k])for(const q of RG[g].out){const L=LINKS[q];if(L.b===tgt)L.W=Math.min(3,L.W+.15);}   // the chosen pathway is reinforced: future choices change
+ const p=treePath(tsp.cur,RG[tgt].hub);if(!p)return;tsp.path=p.slice(1);tsp.tgt=tgt;DEC.mode=MODES[k];DEC.n++;
+ const th=RG[tgt].theme,e={kind:'decide',mode:MODES[k],winner:GNAME[k],target:RG[tgt].name,region:th>=0?REG[th][0]:null,reason,evidence:{MB:ev[0],CX:ev[1],LH:ev[2]},accum:{MB:Xs[0],CX:Xs[1],LH:Xs[2]}};
+ DEC.log.unshift({t:+S.t.toFixed(1),...e});if(DEC.log.length>30)DEC.log.pop();emit('decide',e);thoughtUI();}
+function thoughtUI(){const el=$('#thought');if(!el)return;el.innerHTML='<b>thought stream · decisions</b>'+DEC.log.slice(0,5).map(d=>`<div class="dc"><span class="m m-${d.mode}">${d.mode}</span> → <b>${d.target}</b>${d.region?' · '+REG.find(r=>r[0]===d.region)[1]:''} <i>t=${d.t}s</i><br><small>${d.winner} won · evidence MB ${d.evidence.MB} · CX ${d.evidence.CX} · LH ${d.evidence.LH}</small><br><small>${d.reason}</small></div>`).join('');}
+const tsp={cur:0,prev:-1,path:[],reg:-2,tgt:-1};
+function treeSparkStep(h){if(TN<3)return;if(tsp.cur>=TN){tsp.cur=0;tsp.path=[];}if(!tsp.path.length)return;
+ const g=tsp.path[0];if(g>=TN){tsp.path=[];return;}const gj=g*3,x=spark.x,v=spark.v;v.x+=(40*(TX[gj]-x.x)-11*v.x)*h;v.y+=(40*(TX[gj+1]-x.y)-11*v.y)*h;v.z+=(40*(TX[gj+2]-x.z)-11*v.z)*h;x.addScaledVector(v,h);
+ if(Math.hypot(TX[gj]-x.x,TX[gj+1]-x.y,TX[gj+2]-x.z)<.1){tsp.path.shift();tsp.prev=tsp.cur;tsp.cur=g;
+  if(!tsp.path.length&&tsp.tgt>=0){const R=RG[tsp.tgt];R.visits++;if(R.theme>=0)cov[R.theme]=Math.min(1,cov[R.theme]+.08);emit('attend',{region:R.theme>=0?REG[R.theme][0]:null,neuropil:R.name,coverage:R.theme>=0?+cov[R.theme].toFixed(2):0});}}
+ for(let r=0;r<6;r++)cov[r]*=Math.exp(-h/90);}
+
+/* ---- tree rendering ---- */
+const webG=new THREE.Group();scene.add(webG);webG.add(pts,eLines,nPts,bPts);
+const treeG=new THREE.Group();scene.add(treeG);
+const BU={uNight:PU.uNight,uBg:{value:new THREE.Color(0xf6f2ea)}};
+const cyl=new THREE.CylinderGeometry(1,1,1,8,1,true),aCol=new THREE.InstancedBufferAttribute(new Float32Array(NT*3),3),aGlow=new THREE.InstancedBufferAttribute(new Float32Array(NT),1);cyl.setAttribute('aCol',aCol);cyl.setAttribute('aGlow',aGlow);
+const brMesh=new THREE.InstancedMesh(cyl,new THREE.ShaderMaterial({uniforms:BU,
+ vertexShader:`attribute vec3 aCol;attribute float aGlow;varying vec3 vC,vN,vV;varying float vG,vZ;void main(){mat4 m=modelMatrix*instanceMatrix;vec4 mv=viewMatrix*m*vec4(position,1.);vN=normalize(mat3(viewMatrix)*mat3(m)*normal);vV=normalize(-mv.xyz);vC=aCol;vG=aGlow;vZ=-mv.z;gl_Position=projectionMatrix*mv;}`,
+ fragmentShader:`uniform float uNight;uniform vec3 uBg;varying vec3 vC,vN,vV;varying float vG,vZ;void main(){float fr=1.-abs(dot(normalize(vN),normalize(vV)));vec3 c=vC*(.8+.3*(1.-fr));
+  c=mix(c,vec3(0.,.6,1.),clamp(vG,0.,1.)*(.8+.15*uNight));c+=uNight*fr*fr*vec3(.25,.4,.9);c+=vG*pow(fr,1.5)*vec3(.3,.6,1.)*(.35+uNight*.6);
+  float fog=smoothstep(8.,24.,vZ);gl_FragColor=vec4(mix(c,uBg,fog*.8),1.);}`}),NT);brMesh.frustumCulled=false;treeG.add(brMesh);
+function softMat(add,leaf){return new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:add?THREE.AdditiveBlending:THREE.NormalBlending,uniforms:PU,defines:leaf?{LEAF:1}:{},
+ vertexShader:`uniform float uS,uFocus;attribute vec3 col;attribute float sz,al;varying vec4 vC;
+ #ifdef LEAF
+ attribute float th;varying float vT;
+ #endif
+ void main(){vec4 mv=modelViewMatrix*vec4(position,1.);float z=-mv.z,c=abs(z-uFocus)*.11,fog=smoothstep(9.,26.,z);vC=vec4(col,al*(1.-fog*.65)/(1.+c*c*1.6));gl_PointSize=min(160.,uS*sz*(1.+c)*1100./z);gl_Position=projectionMatrix*mv;
+ #ifdef LEAF
+ vT=th;
+ #endif
+ }`,
+ fragmentShader:`varying vec4 vC;
+ #ifdef LEAF
+ varying float vT;
+ #endif
+ void main(){vec2 p=gl_PointCoord-.5;
+ #ifdef LEAF
+ float c=cos(vT),s=sin(vT);p=mat2(c,-s,s,c)*p;p.x*=2.3/max(.35,abs(cos(vT*1.3)));float d=length(p);if(d>.5)discard;gl_FragColor=vec4(vC.rgb*(.85+.3*p.y),vC.a*smoothstep(.5,.3,d));
+ #else
+ float d=length(p);if(d>.5)discard;gl_FragColor=vec4(vC.rgb,vC.a*exp(-d*d*14.));
+ #endif
+ }`});}
+function layer(n,add,leaf,parent){const g=new THREE.BufferGeometry(),o={P:new Float32Array(n*3),C:new Float32Array(n*3),Z:new Float32Array(n),A:new Float32Array(n),TH:leaf?new Float32Array(n):null};
+ g.setAttribute('position',new THREE.BufferAttribute(o.P,3));g.setAttribute('col',new THREE.BufferAttribute(o.C,3));g.setAttribute('sz',new THREE.BufferAttribute(o.Z,1));g.setAttribute('al',new THREE.BufferAttribute(o.A,1));if(leaf)g.setAttribute('th',new THREE.BufferAttribute(o.TH,1));
+ o.m=softMat(add,leaf);o.o=new THREE.Points(g,o.m);o.o.frustumCulled=false;(parent||scene).add(o.o);o.up=k=>{g.setDrawRange(0,k);for(const a in g.attributes)g.attributes[a].needsUpdate=true;};return o;}
+const neuL=layer(4200,false,false,treeG),fogL=layer(16,false,false,treeG),glowL=layer(NT+7,false,false,treeG),dustL=layer(ND,false,false,treeG),leafL=layer(NL,false,true,treeG),beadL=layer(BM2*4,false,false,treeG);
+const starA=layer(500,false),starB=layer(800,false);
+[[starA,22,34],[starB,38,60]].forEach(([L,a,b])=>{const n=L.Z.length;for(let i=0;i<n;i++){const u=rnd(-1,1),ph=rnd(0,6.28),r=rnd(a,b),q=Math.sqrt(1-u*u);L.P.set([Math.cos(ph)*q*r,u*r*.7,Math.sin(ph)*q*r],i*3);L.Z[i]=rnd(.04,.12)*r/20;L.A[i]=rnd(.15,.5);}L.up(n);});
+const FOG=Array.from({length:16},()=>[rnd(-5,5),rnd(-1,5.5),rnd(-5,5),rnd(2.5,5)]);
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(16,16),new THREE.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{uTime:PU.uTime,uNight:PU.uNight},extensions:{derivatives:true},
+ vertexShader:`varying vec2 vU;void main(){vU=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+ fragmentShader:noise+`uniform float uTime,uNight;varying vec2 vU;void main(){vec2 p=(vU-.5)*16.;float r=length(p);float b=r*2.+snoise(vec3(p*.25,uTime*.02))*.8-uTime*.05;float w=fwidth(b);float l=1.-smoothstep(.04,.04+w*1.5,abs(fract(b)-.5)-.0);
+  vec3 c=mix(vec3(.11,.1,.71),vec3(.6,.7,1.),uNight);gl_FragColor=vec4(c,l*.16*smoothstep(7.5,1.2,r));}`}));
+ground.rotation.x=-Math.PI/2;ground.position.y=GROUND;treeG.add(ground);
+const m4=new THREE.Matrix4(),qq=new THREE.Quaternion(),vS=new THREE.Vector3(),vP=new THREE.Vector3(),vD=new THREE.Vector3();
+function treeFrame(h){const t=S.t;
+ if(!grown){growAcc+=h;while(growAcc>=GROW_DT&&!grown){growAcc-=GROW_DT;growTick();treeParams();if(RG.length&&growTicks%6===0)assignHubs();if(growTicks>=GROW_N||TN>=NT-6){grown=true;assignHubs();bindNeurons();emit('grown',{segments:TN,neuropils:RG.length,links:LINKS.filter(L=>L.segs).length});}}}
+ else if((ptick+=h)>1){ptick=0;treeParams();}
+ tips.length=0;for(let i=1;i<TN;i++)if(!Tkids[i].length&&!TROOT[i]&&TRP[i*3+1]>1.2)tips.push(i);
+ for(let i=0;i<TN;i++)TSRC[i]=(TROOT[i]&&!Tkids[i].length)?nutVal(TRP[i*3],TRP[i*3+1],TRP[i*3+2])*(.05+S.voice*.05):0;
+ sapSolve(6);buildHash();leafStep(h,t);dustStep(h,t);
+ for(let i=0;i<TN;i++)TW[i]+=(1-TW[i])*h/30;
+ for(let q=Tbeads.length-1;q>=0;q--)if((t-Tbeads[q][2])/Tbeads[q][3]>=1||Tbeads[q][0]>=LINKS.length)Tbeads.splice(q,1);
+ for(const f of FOG){const w=windAt(f[0],f[1],f[2],t);f[0]+=w[0]*h*.15;f[2]+=w[2]*h*.15;if(Math.hypot(f[0],f[2])>7){f[0]*=-.9;f[2]*=-.9;}}}
+function treeDraw(dt){const t=S.t;
+ if(night!==treeDraw.n){treeDraw.n=night;for(const L of [glowL,dustL,beadL,fogL,starA,starB,neuL]){L.m.blending=night?THREE.AdditiveBlending:THREE.NormalBlending;L.m.needsUpdate=true;}BU.uBg.value.set(night?0x070a1c:0xf6f2ea);
+  for(const L of [starA,starB]){for(let i=0;i<L.Z.length;i++)L.C.set(night?[.85,.9,1]:[.11,.1,.71],i*3);L.up(L.Z.length);}}
+ starA.o.rotation.y+=dt*.006;starB.o.rotation.y-=dt*.003;
+ const ink=night?new THREE.Color(.62,.72,1):new THREE.Color(0x1c19b5),rootC=night?new THREE.Color(.42,.42,.72):new THREE.Color(0x3d3478),acc=night?new THREE.Color(.75,.9,1):new THREE.Color(0x0099ff),cs=REG.map(r=>new THREE.Color(r[2]));
+ const fl=SE.flux/Math.max(1,TN);let k=0;
+ for(let i=1;i<TN;i++){const p=TP[i],j=i*3,pj=p*3;vD.set(TX[j]-TX[pj],TX[j+1]-TX[pj+1],TX[j+2]-TX[pj+2]);const l=vD.length();if(l<1e-4)continue;
+  vP.set((TX[j]+TX[pj])/2,(TX[j+1]+TX[pj+1])/2,(TX[j+2]+TX[pj+2])/2);qq.setFromUnitVectors(YAX,vD.divideScalar(l));const r=TR[i]*(TROOT[i]?1.7:1)*(1+.7*LWn[i])*(.85+.22*(TW[i]-1))*Math.min(1,(t-TB[i])/.7+.2);vS.set(r,l*1.04,r);m4.compose(vP,qq,vS);brMesh.setMatrixAt(k,m4);
+  const c=TROOT[i]?rootC:(TREG[i]>=0&&TR[i]<.03?ink.clone().lerp(cs[TREG[i]],night?.3:.45):ink);aCol.setXYZ(k,c.r,c.g,c.b);
+  aGlow.setX(k,Math.min(1.5,TG[i]*1.2+Tact[i]*.6+Math.min(1,Math.abs(TQ[i])/(fl*3+1e-6))*.25));k++;}
+ brMesh.count=k;brMesh.instanceMatrix.needsUpdate=aCol.needsUpdate=aGlow.needsUpdate=true;
+ // glow halos at joints, fruit (superclusters)
+ FRn.fill(0);FRC.forEach(f=>f.set(0,0,0));let g=0;const a0=night?1:.6;
+ if(RG.length){const big=[-1,-1,-1,-1,-1,-1];RG.forEach((R,q)=>{if(R.hub>0&&R.theme>=0&&R.hub<TN){FRn[R.theme]++;if(big[R.theme]<0||R.syn>RG[big[R.theme]].syn)big[R.theme]=q;}});big.forEach((q,k)=>{if(q>=0){const hb=RG[q].hub;FRC[k].set(TX[hb*3],TX[hb*3+1],TX[hb*3+2]).multiplyScalar(FRn[k]);}});}   // label each theme at its largest real neuropil
+ for(let i=1;i<TN;i++){const j=i*3,r=TREG[i];if(!RG.length&&r>=0&&!Tkids[i].length&&(TRP[j]-FRUIT[r].x)**2+(TRP[j+1]-FRUIT[r].y)**2+(TRP[j+2]-FRUIT[r].z)**2<.8){FRC[r].x+=TX[j];FRC[r].y+=TX[j+1];FRC[r].z+=TX[j+2];FRn[r]++;}
+  const e=Tact[i]*.6+TG[i]*.8+(i===tsp.cur?.5:0);if(e<.04&&TR[i]<.04)continue;const c=r>=0&&e<.3?cs[r]:acc;glowL.P.set([TX[j],TX[j+1],TX[j+2]],g*3);glowL.C.set([c.r,c.g,c.b],g*3);glowL.Z[g]=TR[i]*2.5+e*.22;glowL.A[g]=(.07+e*.45)*a0;g++;}
+ FRC.forEach((f,r)=>{if(FRn[r])f.divideScalar(FRn[r]);else f.copy(FRUIT[r]);if(!FRn[r])return;const c=cs[r];glowL.P.set([f.x,f.y,f.z],g*3);glowL.C.set(night?[c.r*.6+.4,c.g*.6+.4,c.b*.6+.4]:[c.r,c.g,c.b],g*3);glowL.Z[g]=.7+rate[r]*.25+S.G*.6;glowL.A[g]=(.12+.1*rc[r]+.25*S.G)*a0;g++;});
+ const bt=S.t-S.lastIgn,bl=bt>0&&bt<8?Math.min(1,bt/1.2)*Math.exp(-bt/2.8):0;if(bl>.02){glowL.P.set([0,2.7,0],g*3);glowL.C.set([acc.r,acc.g,acc.b],g*3);glowL.Z[g]=6.5*bl;glowL.A[g]=(night?.4:.32)*bl;g++;}   // canopy bloom
+ glowL.up(g);
+ // sap / spike pulses with trails
+ let b=0;const inh=night?[1,.5,.45]:[.71,.2,.11];for(const q of Tbeads){const [k,_,t0,T]=q,L=LINKS[k];if(!L||!L.path)continue;const P=L.path,u=Math.min(1,(t-t0)/T),sg=RG[L.a].sgn,col=sg<0?inh:[acc.r,acc.g,acc.b];
+  for(let s=0;s<4;s++){const w=Math.max(0,u-s*.05)*(P.length-1),i0=Math.min(P.length-2,Math.floor(w)),f=w-i0,A=P[i0],B=P[i0+1],bj=b*3;beadL.P[bj]=TX[A*3]+(TX[B*3]-TX[A*3])*f;beadL.P[bj+1]=TX[A*3+1]+(TX[B*3+1]-TX[A*3+1])*f;beadL.P[bj+2]=TX[A*3+2]+(TX[B*3+2]-TX[A*3+2])*f;
+  beadL.C.set(col,bj);beadL.Z[b]=(.05+.05*L.wn)*(1-s*.22);beadL.A[b]=(night?.9:.75)*(1-s*.25);b++;}}beadL.up(b);
+ // FlyWire neuron sample at real positions, bound to their branch; colour = neurotransmitter
+ let nn=0;const NTC={acetylcholine:night?[.55,.8,1]:[0,.6,1],glutamate:night?[.55,.8,1]:[0,.6,1],gaba:night?[1,.5,.45]:[.71,.2,.11]},MOD=night?[.75,.65,1]:[.42,.31,.85];
+ for(const n of NEU){let x=n.p[0],y=n.p[1],z=n.p[2];if(n.node>0&&n.node<TN){x=TX[n.node*3]+n.off[0];y=TX[n.node*3+1]+n.off[1];z=TX[n.node*3+2]+n.off[2];}const a=n.r>=0?RG[n.r].act:0,c=NTC[n.nt]||(n.nt?MOD:[.5,.5,.55]);
+  neuL.P.set([x,y,z],nn*3);neuL.C.set(c,nn*3);neuL.Z[nn]=.028+.03*a;neuL.A[nn]=gf()*(.28+.6*a)*(night?1:.85);nn++;}neuL.up(nn);
+ // leaves
+ let n=0;for(let l=0;l<NL;l++){if(!LS[l])continue;const j=l*3,c0=LREG[l]>=0?cs[LREG[l]]:ink,bl=LS[l]===1&&LA[l]<TN?TG[LA[l]]:0,c=bl>.05?c0.clone().lerp(acc,Math.min(1,bl)):c0;leafL.P.set([LX[j],LX[j+1],LX[j+2]],n*3);leafL.C.set(night?[c.r*.5+.45,c.g*.5+.45,c.b*.5+.5]:[c.r,c.g,c.b],n*3);leafL.Z[n]=.075;leafL.A[n]=LAL[l]*(LS[l]===2?.8:.9);leafL.TH[n]=LTH[l];n++;}leafL.up(n);
+ // dust
+ n=0;for(let d=0;d<ND;d++){const age=t-DT0[d];if(age<0||age>16)continue;const j=d*3,c=DR[d]>=0?cs[DR[d]]:ink;dustL.P.set([DXp[j],DXp[j+1],DXp[j+2]],n*3);dustL.C.set(night?[.8,.88,1]:[c.r,c.g,c.b],n*3);dustL.Z[n]=.03;dustL.A[n]=Math.min(1,age/1.5)*Math.min(1,(16-age)/3)*(night?.8:.55);n++;}dustL.up(n);
+ FOG.forEach((f,i)=>{fogL.P.set([f[0],f[1],f[2]],i*3);fogL.C.set(night?[.1,.16,.4]:[1,.99,.96],i*3);fogL.Z[i]=f[3];fogL.A[i]=night?.12:.28;});fogL.up(FOG.length);
+ ring.material.color.copy(tsp.reg>=0?cs[tsp.reg]:ink);dot.material.color.copy(ring.material.color);}
+function treeUI(now){const gv=gf();
+ const L=[];REG.forEach((r,i)=>{const el=lbl[i];if(!FRn[i]){el.style.opacity=0;return;}const p=FRC[i].clone().project(camera),d=FRC[i].distanceTo(camera.position);L.push({i,el,x:(p.x+1)/2*innerWidth+14,y:(1-p.y)/2*innerHeight-34,z:p.z,d});});
+ L.sort((a,b)=>a.y-b.y);for(let a=1;a<L.length;a++)for(let b=0;b<a;b++)if(Math.abs(L[a].x-L[b].x)<190&&L[a].y-L[b].y<34)L[a].y=L[b].y+34;   // keep labels legible
+ const dm=L.length?Math.min(...L.map(o=>o.d)):1;L.forEach(o=>{o.el.style.opacity=o.z>1?0:Math.min(1,gv*1.3)*(o.i===hoverC||o.i===focusC?1:Math.max(.45,1-(o.d-dm)*.3));o.el.style.transform=`translate(${o.x}px,${o.y}px)`;o.el.lastChild.textContent=RG.length?`${FRn[o.i]} neuropils · ${THEME_GROUPS[REG[o.i][0]].slice(0,3).join(' ')}…`:'fruit · sync '+rc[o.i].toFixed(2);});
+ {const p=spark.x.clone().project(camera),r=TREG[tsp.cur],q=TRN[tsp.cur],R=(q>=0?RG[q].name+' · ':'')+(r>=0?REG[r][1]:(TROOT[tsp.cur]?'roots':'trunk'))+(DEC.n?' · '+DEC.mode:'');$('#spk').style.transform=`translate(${(p.x+1)/2*innerWidth+14}px,${(1-p.y)/2*innerHeight+6}px)`;$('#spk').textContent='attending · '+R;$('#spk').style.opacity=p.z>1?0:.75;}
+ if(hudOn&&Math.floor(now*5)!==treeUI.h){treeUI.h=Math.floor(now*5);const f=x=>x<.001?x.toExponential(1):x.toFixed(3);
+  $('#hud').innerHTML=`<b>tree of life · dynamics</b><br>growth ${(gv*100).toFixed(0)}% · segments ${TN} · roots ${rootN}<br>leaves ${SE.att} on · ${SE.free} in flight · wind ${(.35+Math.max(0,gust)*.8).toFixed(2)}<br>energy K ${f(SE.kin)} · U<sub>spring</sub> ${f(SE.spring)} · U<sub>g</sub> ${f(SE.grav)}<br>sap flux ${SE.flux.toFixed(2)} · pulses ${Tbeads.length}<br>sync r ${(rc.reduce((a,b)=>a+b,0)/6).toFixed(2)} · workspace G ${S.G.toFixed(2)} · ignitions ${S.ignN}<br>prediction err ${S.err.toFixed(3)}<br>decision race MB ${DEC.X[0].toFixed(2)} · CX ${DEC.X[1].toFixed(2)} · LH ${DEC.X[2].toFixed(2)} · mode ${DEC.mode}<br>wired: ${RG.length} neuropils · ${LINKS.length} real links`+
+   REG.map((r,i)=>`<div class="bar"><span>${r[0]}</span><i style="width:${Math.min(100,rate[i]*40)}%;background:${r[2]}"></i><em>r ${rc[i].toFixed(2)}</em></div>`).join('');}}
+function treeSnap(){return {mode:'tree',growth:+gf().toFixed(2),segments:TN,roots:rootN,energy:{kinetic:+SE.kin.toExponential(3),springPE:+SE.spring.toExponential(3),gravityPE:+SE.grav.toExponential(3)},sapFlux:+SE.flux.toFixed(3),leaves:{attached:SE.att,free:SE.free},collisions:SE.hits||0,pulses:Tbeads.length,attention:TREG[tsp.cur]>=0?REG[TREG[tsp.cur]][0]:(TROOT[tsp.cur]?'roots':'trunk'),neuropil:TRN[tsp.cur]>=0?RG[TRN[tsp.cur]].name:null,mode:'tree',behaviour:DEC.mode,decisions:DEC.n,race:{MB:+DEC.X[0].toFixed(3),CX:+DEC.X[1].toFixed(3),LH:+DEC.X[2].toFixed(3)},wired:{neuropils:RG.length,links:LINKS.length,routed:LINKS.filter(L=>L.segs).length,neurons:NEU.length}};}
+const stateNow=()=>MODE==='tree'?{...snapshot(),...treeSnap()}:{...snapshot(),mode:'web'};
+function setMode(m){MODE=m;const tr=m==='tree';document.body.classList.toggle('web',!tr);treeG.visible=tr;webG.position.set(0,tr?4.4:0,0);webG.scale.setScalar(tr?.72:1);PU.uTree.value=tr?1:0;core.position.y=halo.position.y=tr?CORE_Y:0;bPts.visible=!tr;eMat.opacity=tr?.3:.55;
+ $('#brand').innerHTML='{ the : <b>conscious</b> : forms } · '+(tr?'tree of life':'cosmic web');$('#note').textContent=tr?'roots draw energy up · the trunk carries it · the canopy dissolves into the cosmic web':'the brain as a cosmic web · gravity builds the web · the web learns to think';
+ $('#mode').textContent='mode: '+(tr?'tree of life':'cosmic web');$('#reseed').textContent=tr?'new seed':'new universe';$('#warp').style.display=tr?'none':'';lbl.forEach(l=>l.lastChild.textContent='supercluster');
+ focusC=-1;cam.on=false;camera.position.set(0,tr?.2:1.2,tr?7.5:10);controls.target.set(0,tr?-.4:0,0);camD.v=0;controls.autoRotateSpeed=tr?.1:.12;S.ign=false;}
+$('#mode').onclick=()=>setMode(MODE==='tree'?'web':'tree');
+
+/* ---------- main loop: fixed timesteps ---------- */
+const H=1/30,HN=1/120;let acc=0,last=0,fpsE=60,qT=0,nodeT=0,camD={v:0};const clock=new THREE.Clock();
+function resize(){renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.fov=camera.aspect<1?60:42;camera.updateProjectionMatrix();PU.uS.value=renderer.getPixelRatio()*innerHeight/900;}
+addEventListener('resize',resize);resize();
+let drawFrac=1;
+function render(){const now=clock.getElapsedTime(),dt=Math.min(now-last,.1);last=now;fpsE+=(1/Math.max(dt,1e-3)-fpsE)*.05;qT+=dt;
+ if(qT>3){qT=0;if(fpsE<26&&drawFrac>.4&&!Q.has('q')){drawFrac-=.25;pgeo.setDrawRange(0,Math.floor(N*drawFrac));renderer.setPixelRatio(1);resize();}}   // adaptive quality
+ acc+=dt;let n=0;
+ while(acc>=H&&n<2){for(let w=0;w<(MODE==='tree'?1:SIMG.warp);w++){                                // gravity at 30 Hz (× cosmic time warp)
+   deposit();solve();const g=SIMG.gamma*(1+SIMG.ct/12);
+   for(let p=0;p<N;p++){const j=p*3,x=P[j],y=P[j+1],z=P[j+2];let ax=sampleGrid(FX,x,y,z),ay=sampleGrid(FY,x,y,z),az=sampleGrid(FZ,x,y,z);
+    const r2=x*x+y*y+z*z,f=SIMG.Mc*Math.exp(-r2/3)/Math.pow(r2+.64,1.5);ax-=x*f;ay-=y*f;az-=z*f;                                         // the great attractor (core)
+    const a2=ax*ax+ay*ay+az*az;ACC[p]+=(Math.sqrt(a2)-ACC[p])*.3;
+    let vx=(V[j]+ax*H)*Math.exp(-g*H),vy=(V[j+1]+ay*H)*Math.exp(-g*H),vz=(V[j+2]+az*H)*Math.exp(-g*H);let nx=x+vx*H,ny=y+vy*H,nz=z+vz*H;   // semi-implicit Euler with Hubble-like drag
+    const rr=Math.hypot(nx,ny,nz);if(rr<SIMG.core*1.05){const k=SIMG.core*1.05/rr;nx*=k;ny*=k;nz*=k;const vd=(vx*nx+vy*ny+vz*nz)/(rr*k);vx-=1.5*vd*nx/(rr*k);vy-=1.5*vd*ny/(rr*k);vz-=1.5*vd*nz/(rr*k);}
+    P[j]=wrap(nx);P[j+1]=wrap(ny);P[j+2]=wrap(nz);V[j]=vx;V[j+1]=vy;V[j+2]=vz;}
+   S.cosmicT=(S.cosmicT||0)+H;SIMG.ct=S.cosmicT;}
+  for(let s=0;s<4;s++){if(MODE==='tree'){treeNeural(HN,S.t);treeStep(HN/2,S.t);treeStep(HN/2,S.t+HN/2);treeSparkStep(HN);}else{neural(HN,S.t);stepSpark(HN);}S.voice+=(Math.max(micLevel(),S.vext)-S.voice)*HN*12;stepCore(HN);S.t+=HN;}
+  if(MODE==='tree')treeFrame(H);S.vext*=Math.exp(-H*6);if(S.voice>.05)for(let i=0;i<CN;i+=3)CW[i]+=S.voice*.01;
+  acc-=H;n++;}
+ if(n===2)acc=0;
+ nodeT+=dt;if(nodeT>1.5){nodeT=0;for(let p=0;p<N;p++)DEN[p]=sampleGrid(RHO,P[p*3],P[p*3+1],P[p*3+2]);findNodes();baseColors();pgeo.attributes.den.needsUpdate=true;}
+ // self-model: each region predicts its own next rate
+ for(let r=0;r<6;r++){const e=Math.abs(rate[r]-pred[r]);perr[r]+=(e-perr[r])*Math.min(1,dt*3);pred[r]=rate[r]+(rate[r]-prevA[r])/Math.max(dt,1e-3)*.25;prevA[r]=rate[r];}S.err=perr.reduce((a,b)=>a+b,0)/6;
+ pgeo.attributes.position.needsUpdate=pgeo.attributes.acc.needsUpdate=true;
+ // nodes, axons, beads
+ const cs=REG.map(r=>new THREE.Color(r[2]));nodes.forEach((n,i)=>{if(i>=NMAX)return;nPos.set([n.x,n.y,n.z],i*3);const c=n.reg>=0?cs[n.reg]:new THREE.Color(0x1c19b5);const sh=n.reg>=0?perr[n.reg]*Math.random():0,g=Math.min(1,Math.abs(n.dv||0)/5+n.act*.6+sh);
+  const cc=c.clone().lerp(new THREE.Color(night?0xffffff:0x0099ff),g);nCol.set([cc.r,cc.g,cc.b],i*3);nSz[i]=.35+Math.min(1.2,n.mass/14)+n.act*.5+(i===S.tc?.4:0);});
+ for(let i=nodes.length;i<NMAX;i++)nSz[i]=0;ng.setDrawRange(0,Math.min(NMAX,nodes.length));ng.attributes.position.needsUpdate=ng.attributes.color.needsUpdate=ng.attributes.sz.needsUpdate=true;
+ if(edges.length){const ep=eGeo.attributes.position.array,ec=eGeo.attributes.color.array;edges.forEach((e,k)=>{const A=nodes[e.a],B=nodes[e.b];ep.set([A.x,A.y,A.z,B.x,B.y,B.z],k*6);const w=Math.min(1,(W8.get(e.key)-.5)/2);
+  const c=new THREE.Color(night?0x9fb4ff:0x1c19b5).multiplyScalar(night?.4+.6*w:1);const f=night?1:.35+.65*w;const base=night?c:new THREE.Color(.93,.92,.95).lerp(c,f);ec.set([base.r,base.g,base.b,base.r,base.g,base.b],k*6);});
+  eGeo.attributes.position.needsUpdate=eGeo.attributes.color.needsUpdate=true;}
+ let nb=0;for(let q=beads.length-1;q>=0;q--){const b=beads[q],u=(S.t-b.t0)/b.T,e=edges[b.e];if(u>=1||!e||!nodes[e.a]||!nodes[e.b]){beads.splice(q,1);continue;}if(nb>=BMAX)continue;const A=nodes[b.from===e.a?e.a:e.b],B=nodes[b.from===e.a?e.b:e.a];
+  bPos.set([A.x+(B.x-A.x)*u,A.y+(B.y-A.y)*u,A.z+(B.z-A.z)*u],nb*3);nb++;}bg.setDrawRange(0,nb);bg.attributes.position.needsUpdate=true;
+ // spark
+ sparkG.position.copy(spark.x);sparkG.lookAt(camera.position);const rc0=nodes[S.tc]&&nodes[S.tc].reg>=0?cs[nodes[S.tc].reg]:new THREE.Color(0x1c19b5);ring.material.color.copy(rc0);dot.material.color.copy(rc0);sparkG.scale.setScalar(1+.25*Math.sin(S.t*6));
+ spark.hist.unshift(spark.x.clone());if(spark.hist.length>60)spark.hist.pop();const ta=trailGeo.attributes.position.array;spark.hist.forEach((p,i)=>ta.set([p.x,p.y,p.z],i*3));trailGeo.setDrawRange(0,spark.hist.length);trailGeo.attributes.position.needsUpdate=true;
+ // uniforms
+ U.uTime.value=PU.uTime.value=S.t;U.uG.value=S.G;U.uErr.value=Math.min(1,S.err*4);U.uVoice.value=S.voice;PU.uWave.value=S.waveT;halo.material.uniforms.uP.value=S.G*.4+S.voice*.4;
+ cg.attributes.disp.needsUpdate=cg.attributes.rate.needsUpdate=true;
+ // camera: critically damped spring for flights; slow cosmic drift via auto-rotation; ignition pulls the view back (dolly spring)
+ if(cam.on){const k=5,c=2*Math.sqrt(k);cam.v.addScaledVector(new THREE.Vector3().subVectors(cam.pos,camera.position).multiplyScalar(k).addScaledVector(cam.v,-c),dt);camera.position.addScaledVector(cam.v,dt);
+  cam.tv.addScaledVector(new THREE.Vector3().subVectors(cam.tgt,controls.target).multiplyScalar(k).addScaledVector(cam.tv,-c),dt);controls.target.addScaledVector(cam.tv,dt);if(camera.position.distanceTo(cam.pos)<.05&&cam.v.length()<.05)cam.on=false;}
+ else if(focusC<0){const d=camera.position.distanceTo(controls.target),want=(MODE==='tree'?6.5+5.5*gf():10)+2.2*S.G;if(MODE==='tree'){const ty=-.4+1.2*gf();const dy=(ty-controls.target.y)*Math.min(1,dt*.5);controls.target.y+=dy;camera.position.y+=dy*1.15;}camD.v+=((want-d)*1.2-camD.v*2.2)*dt;camera.position.sub(controls.target).setLength(Math.max(1.5,d+camD.v*dt)).add(controls.target);}
+ controls.update();PU.uFocus.value=camera.position.distanceTo(controls.target);
+ if(MODE==='tree')treeDraw(dt);renderer.render(scene,camera);
+ // labels
+ REG.forEach((r,i)=>{const n=headNode(i),el=lbl[i];if(!n){el.style.opacity=0;return;}const p=new THREE.Vector3(n.x,n.y,n.z).project(camera);el.style.opacity=p.z>1?0:(i===hoverC||i===focusC?1:.8);el.style.transform=`translate(${(p.x+1)/2*innerWidth-6}px,${(1-p.y)/2*innerHeight-30}px)`;});
+ {const p=spark.x.clone().project(camera),n=nodes[S.tc],R=n&&n.reg>=0?REG[n.reg][1]:'the web';$('#spk').style.transform=`translate(${(p.x+1)/2*innerWidth+14}px,${(1-p.y)/2*innerHeight+6}px)`;$('#spk').textContent='attending · '+R;$('#spk').style.opacity=p.z>1?0:.75;}
+ if(MODE==='tree')treeUI(now);else if(hudOn&&(Math.floor(now*5)!==render.h)){render.h=Math.floor(now*5);$('#hud').innerHTML=`<b>cosmic web · dynamics</b><br>cosmic time ${(S.cosmicT||0).toFixed(1)} · particles ${Math.floor(N*drawFrac)}<br>nodes ${nodes.length} · filaments ${edges.length}<br>sync r ${(rc.reduce((a,b)=>a+b,0)/6).toFixed(2)} · workspace G ${S.G.toFixed(2)}<br>ignitions ${S.ignN} · prediction err ${S.err.toFixed(3)}<br>signals in flight ${beads.length}`+
+  REG.map((r,i)=>`<div class="bar"><span>${r[0]}</span><i style="width:${Math.min(100,rate[i]*40)}%;background:${r[2]}"></i><em>r ${rc[i].toFixed(2)}</em></div>`).join('');}
+ if(window.parent!==window&&Math.floor(now*4)!==render.p){render.p=Math.floor(now*4);window.parent.postMessage({type:'thira-state',source:'cosmic',state:stateNow()},'*');}}
+function snapshot(){return {t:+S.t.toFixed(1),cosmicT:+(S.cosmicT||0).toFixed(1),nodes:nodes.length,filaments:edges.length,fire:Array.from(rate,x=>+x.toFixed(3)),sync:Array.from(rc,x=>+x.toFixed(3)),r:+(rc.reduce((a,b)=>a+b,0)/6).toFixed(3),G:+S.G.toFixed(3),ignitions:S.ignN,predErr:+S.err.toFixed(3),coverage:Array.from(cov,x=>+x.toFixed(3)),regions:REG.map(r=>r[0]),attention:nodes[S.tc]&&nodes[S.tc].reg>=0?REG[nodes[S.tc].reg][0]:null,quality:QL,particles:N};}
+seed();seedTree();setMode(MODE);fwLoad().then(ok=>{if(ok){seedTree();thoughtUI();}});setPal(night);if(!hudOn)$('#hud').classList.add('off');
+renderer.setAnimationLoop(render);
+window.cosmicState=stateNow;window.cosmicMode=setMode;window.cosmicDecisions=()=>DEC.log.slice();window.cosmicRegions=()=>RG.map(r=>({name:r.name,rate:+r.rate.toFixed(2),sgn:+r.sgn.toFixed(2),hub:r.hub,d:+(r.hubD||0).toFixed(2)}));window.treeTune=v=>TREE_TH=v;window.cosmicEvents=()=>EV.slice();window.cosmicFocus=focusReg;window.cosmicPalette=setPal;window.__ready=true;
+</script></body></html>

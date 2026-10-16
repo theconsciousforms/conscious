@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mind · The Conscious Forms</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root{--mono:'JetBrains Mono',ui-monospace,Menlo,monospace;--fg:#1c19b5;--ink:#1d1d1f;--card:rgba(255,253,248,.7);--line:rgba(28,25,181,.14)}
+html,body{margin:0;height:100%;overflow:hidden;font-family:'Inter Tight',-apple-system,Helvetica,Arial,sans-serif;color:var(--ink);background:radial-gradient(1300px 900px at 50% 45%,#fffdf8 0%,#f6f2ea 50%,#ebe3d4 100%);transition:background .6s}
+body.night{--fg:#cfd8ff;--card:rgba(10,14,40,.6);--line:rgba(160,180,255,.18);color:#dfe5ff;background:radial-gradient(1300px 900px at 50% 45%,#0e1433 0%,#070a1c 55%,#03040b 100%)}
+canvas{display:block;position:fixed;inset:0}
+#top{position:fixed;top:18px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:9px;z-index:5;pointer-events:none}
+#brand{color:var(--fg);font-size:12px;letter-spacing:.24em;font-weight:300}#brand b{font-weight:500}
+#looks{display:flex;gap:4px;pointer-events:auto;padding:4px;border-radius:999px;background:var(--card);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--line)}
+#looks button{font:inherit;font-size:12px;padding:6px 16px;border-radius:999px;border:0;background:transparent;color:var(--fg);cursor:pointer;letter-spacing:.04em}#looks button.on{background:var(--fg);color:#fff}body.night #looks button.on{color:#0a0e28}
+#looks button kbd{font-family:var(--mono);font-size:9px;opacity:.5;margin-left:6px}
+#cap{font-size:12px;color:var(--fg);opacity:.7;letter-spacing:.03em;max-width:620px;text-align:center;line-height:1.5}
+#hud{position:fixed;left:20px;bottom:18px;width:250px;font-family:var(--mono);font-size:10.5px;line-height:1.65;color:var(--fg);background:var(--card);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:12px;padding:10px 12px;z-index:4}
+#hud b{font-weight:400;letter-spacing:.14em;text-transform:uppercase;opacity:.6}#hud .bar{display:grid;grid-template-columns:86px 1fr 36px;gap:6px;align-items:center}#hud .bar i{height:3px;border-radius:2px;display:block;background:var(--fg)}
+#thought{position:fixed;right:20px;top:120px;width:310px;font-family:var(--mono);font-size:10px;line-height:1.5;color:var(--fg);background:var(--card);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:12px;padding:10px 12px;z-index:4;max-height:52vh;overflow:hidden}
+#thought:empty{display:none}#thought>b{font-weight:400;letter-spacing:.14em;text-transform:uppercase;opacity:.6;display:block;margin-bottom:4px}#thought .dc{padding:6px 0;border-top:1px solid var(--line)}#thought i{opacity:.5;font-style:normal}#thought small{opacity:.72}
+.m{display:inline-block;padding:0 6px;border-radius:999px;color:#fff;font-size:9.5px}.m-recall{background:#0099ff}.m-explore{background:#1c19b5}.m-react{background:#b5341c}
+#side{position:fixed;right:20px;bottom:18px;display:flex;gap:6px;z-index:5;flex-wrap:wrap;justify-content:flex-end}
+#side button,#side a{font-family:var(--mono);font-size:10.5px;padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;text-decoration:none;backdrop-filter:blur(8px)}
+#credit{position:fixed;left:50%;transform:translateX(-50%);bottom:48px;font-family:var(--mono);font-size:9px;color:var(--fg);opacity:.6;z-index:5;white-space:nowrap}#credit a{color:inherit}
+.tl{position:fixed;left:0;top:0;font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--fg);white-space:nowrap;pointer-events:none;z-index:3;opacity:.75}
+.tl:before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--c,var(--fg));margin-right:6px;vertical-align:1px}.tl.plain:before{display:none}
+body.embed #side,body.embed #hud,body.embed #thought{display:none}
+@media (max-width:760px){#hud,#thought{display:none}#cap{font-size:11px;padding:0 14px}#credit{white-space:normal;max-width:92vw;text-align:center;bottom:56px}}
+</style>
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
+</head><body>
+<div id="top"><div id="brand">{ the : <b>conscious</b> : forms } · mind</div>
+<div id="looks"><button data-l="stream">Stream<kbd>1</kbd></button><button data-l="field">Field<kbd>2</kbd></button><button data-l="mirror">Mirror<kbd>3</kbd></button></div><div id="cap"></div></div>
+<div id="labels"></div><div id="hud"></div><div id="thought"></div>
+<div id="credit">Connectome data: <a href="https://flywire.ai" target="_blank" rel="noopener">FlyWire</a> v783 · Dorkenwald et al. 2024, <a href="https://doi.org/10.1038/s41586-024-07558-y" target="_blank" rel="noopener">Nature 634:124</a> · Schlegel et al. 2024, <a href="https://doi.org/10.1038/s41586-024-07686-5" target="_blank" rel="noopener">Nature 634:139</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC-BY 4.0</a></div>
+<div id="side"><button id="pal">palette: light</button><button id="mic">mic: off</button><a href="cosmic.html">tree &amp; web ↗</a><a href="sphere.html">sphere ↗</a><a href="index.html">dashboard ↗</a></div>
+<script type="module">
+import * as THREE from 'three';
+import {GPUComputationRenderer} from 'three/addons/misc/GPUComputationRenderer.js';
+import {createEngine,REG} from './engine.js';
+/* =====================================================================
+   THIRA · MIND. One engine (engine.js: FlyWire-wired neural sim, decisions, ignition, self-model) and three looks
+   that only render it differently. Each look runs its own fixed-step dynamics. physics.md §16.
+   ===================================================================== */
+const $=s=>document.querySelector(s),Q=new URLSearchParams(location.search);if(Q.has('embed'))document.body.classList.add('embed');
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches,COARSE=matchMedia('(pointer: coarse)').matches;
+let QL=Q.get('q')!=null?+Q.get('q'):(COARSE||RM?1:2);
+const rnd=(a,b)=>a+Math.random()*(b-a),gauss=()=>{let u=0;while(!u)u=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(6.2832*Math.random());};
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});renderer.setPixelRatio(QL===2?Math.min(devicePixelRatio,2):1);renderer.setClearColor(0,0);document.body.prepend(renderer.domElement);
+const camera=new THREE.PerspectiveCamera(40,1,.05,200);
+const E=createEngine();const S=E.S;let night=Q.get('palette')==='night';
+const TC=REG.map(r=>new THREE.Color(r[2]));
+const INK=()=>night?new THREE.Color(.7,.78,1):new THREE.Color(0x1c19b5),ACC=()=>night?new THREE.Color(.6,.88,1):new THREE.Color(0x0099ff),RED=()=>night?new THREE.Color(1,.55,.5):new THREE.Color(0xb5341c);
+const labels=$('#labels');function mkLabel(txt,c,plain){const d=document.createElement('div');d.className='tl'+(plain?' plain':'');if(c)d.style.setProperty('--c',c);d.textContent=txt;labels.appendChild(d);return d;}
+function place(el,v,dx=8,dy=-6){const p=v.clone().project(camera);el.style.opacity=p.z>1?0:'';el.style.transform=`translate(${(p.x+1)/2*innerWidth+dx}px,${(1-p.y)/2*innerHeight+dy}px)`;}
+const curl=(x,y,z,t)=>[.75*Math.cos(.75*y+.21*t)-.8*Math.cos(.8*z+.27*t),.7*Math.cos(.7*z-.23*t)-.85*Math.cos(.85*x-.29*t),.6*Math.cos(.6*x+.19*t)-.9*Math.cos(.9*y+.31*t)];   // curl of a smooth vector potential: divergence-free
+function lineMat(){return new THREE.ShaderMaterial({transparent:true,depthWrite:false,vertexColors:true,uniforms:{},vertexShader:`attribute float al;varying vec4 vC;void main(){vC=vec4(color,al);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,fragmentShader:`varying vec4 vC;void main(){gl_FragColor=vC;}`});}
+function ptsMat(){return new THREE.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{uS:{value:1}},vertexShader:`uniform float uS;attribute vec3 col;attribute float sz,al;varying vec4 vC;void main(){vec4 mv=modelViewMatrix*vec4(position,1.);vC=vec4(col,al);gl_PointSize=min(120.,uS*sz*1100./-mv.z);gl_Position=projectionMatrix*mv;}`,
+ fragmentShader:`varying vec4 vC;void main(){float d=length(gl_PointCoord-.5);if(d>.5)discard;gl_FragColor=vec4(vC.rgb,vC.a*exp(-d*d*14.));}`});}
+function ptsLayer(n,scene){const g=new THREE.BufferGeometry(),o={P:new Float32Array(n*3),C:new Float32Array(n*3),Z:new Float32Array(n),A:new Float32Array(n)};g.setAttribute('position',new THREE.BufferAttribute(o.P,3));g.setAttribute('col',new THREE.BufferAttribute(o.C,3));g.setAttribute('sz',new THREE.BufferAttribute(o.Z,1));g.setAttribute('al',new THREE.BufferAttribute(o.A,1));
+ o.m=ptsMat();o.o=new THREE.Points(g,o.m);o.o.frustumCulled=false;scene.add(o.o);o.up=k=>{g.setDrawRange(0,k);for(const a in g.attributes)g.attributes[a].needsUpdate=true;};return o;}
+const blend=m=>{m.blending=night?THREE.AdditiveBlending:THREE.NormalBlending;m.needsUpdate=true;};
+
+/* ===================== LOOK 1 · STREAM (William James) =====================
+   Particles are fluid parcels advected by a flow field: mean current U (1 unit = 1 s of time), divergence-free curl turbulence that grows with age
+   (the past diffuses), cohesion to each parcel's region lane that decays with age (the present is sharp). Each region emits parcels in
+   proportion to its live activity at the "now" line. A decision steers a share of the current toward the target's lane (a branch). Ignition
+   launches a pressure front that widens and brightens the stream as it travels down the past. */
+function Stream(){const scene=new THREE.Scene(),NP=[3500,7000,12000][QL],K=7,X0=-5.4,U=1.05;
+ const P=new Float32Array(NP*3),V=new Float32Array(NP*3),AGE=new Float32Array(NP).fill(-1),RR=new Int16Array(NP),LANE=new Float32Array(NP),ST=new Float32Array(NP),STU=new Float32Array(NP),HB=new Float32Array(NP*K*3),HEAD=new Uint8Array(NP);
+ let lanes=[],emitAcc=[],order=[],branch=null,live=NP;
+ const g=new THREE.BufferGeometry(),pos=new Float32Array(NP*(K-1)*6),col=new Float32Array(NP*(K-1)*6),al=new Float32Array(NP*(K-1)*2);g.setAttribute('position',new THREE.BufferAttribute(pos,3));g.setAttribute('color',new THREE.BufferAttribute(col,3));g.setAttribute('al',new THREE.BufferAttribute(al,1));
+ const mat=lineMat(),lines=new THREE.LineSegments(g,mat);lines.frustumCulled=false;scene.add(lines);
+ const heads=ptsLayer(NP+8,scene);
+ // the "now" line and time ticks
+ const nowG=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(X0,-2.1,0),new THREE.Vector3(X0,2.1,0)]),nowL=new THREE.Line(nowG,new THREE.LineDashedMaterial({color:0x1c19b5,transparent:true,opacity:.35,dashSize:.06,gapSize:.06}));nowL.computeLineDistances();scene.add(nowL);
+ const tick=[0,2,4,6,8,10].map(s=>mkLabel(s?`−${s} s`:'now',null,true));const thl=REG.map(r=>mkLabel(r[1],r[2]));
+ function init(){order=E.RG.map((r,i)=>i).sort((a,b)=>(E.RG[a].theme-E.RG[b].theme)||E.RG[a].p[1]-E.RG[b].p[1]);lanes=new Float32Array(E.RG.length);order.forEach((i,k)=>lanes[i]=-1.75+3.5*k/(order.length-1));emitAcc=new Float32Array(E.RG.length);}
+ function spawn(r){for(let n=0;n<NP;n++){const q=(spawn.c=(spawn.c||0)+1)%NP;if(AGE[q]<0||AGE[q]>13||q>=live){const j=q*3,R=E.RG[r];P[j]=X0+rnd(0,.05);P[j+1]=lanes[r]+gauss()*.02;P[j+2]=(R.side==='L'?-.35:R.side==='R'?.35:0)+gauss()*.05;V[j]=U;V[j+1]=0;V[j+2]=0;AGE[q]=0;RR[q]=r;LANE[q]=lanes[r];STU[q]=-1;
+   if(branch&&S.t-branch.t<1.4&&(E.GRP[branch.k].includes(r)||Math.random()<.3)){ST[q]=lanes[branch.tgt];STU[q]=branch.t+2.2;}
+   for(let k=0;k<K;k++){HB[(q*K+k)*3]=P[j];HB[(q*K+k)*3+1]=P[j+1];HB[(q*K+k)*3+2]=P[j+2];}HEAD[q]=0;return;}}}
+ function step(h){const t=S.t;E.RG.forEach((R,i)=>{emitAcc[i]+=h*(1.5+60*R.act+6*R.rate)*NP/7000*(i===E.DEC.target?2:1);while(emitAcc[i]>=1){emitAcc[i]--;spawn(i);}});
+  const ti=t-S.lastIgn,xw=X0+3.2*ti,ia=ti>0&&ti<6?Math.exp(-ti/2.5):0;
+  for(let q=0;q<live;q++){if(AGE[q]<0)continue;const j=q*3;let a=AGE[q]+=h;if(a>13||P[j]>6.2){AGE[q]=-1;continue;}
+   const c=curl(P[j]*1.3,P[j+1]*1.3,P[j+2]*1.3+q%7,t*.5),turb=.08+.05*a,coh=3*Math.exp(-a/2.2);
+   let fx=(U-V[j])*2+c[0]*turb,fy=-V[j+1]*1.2+c[1]*turb+coh*(LANE[q]-P[j+1]),fz=-V[j+2]*1.2+c[2]*turb*.6;
+   if(STU[q]>t)fy+=4*(ST[q]-P[j+1]);else if(STU[q]>0&&STU[q]<=t){LANE[q]=ST[q];STU[q]=0;}                 // a branch: the parcel adopts its new lane
+   if(ia>0){const d=P[j]-xw,wv=Math.exp(-d*d/.18)*ia;fy+=wv*9*Math.sign(P[j+1]||1)*Math.min(1,Math.abs(P[j+1])+.3);fx+=wv*1.5;}                // ignition front widens the stream
+   V[j]+=fx*h;V[j+1]+=fy*h;V[j+2]+=fz*h;P[j]+=V[j]*h;P[j+1]+=V[j+1]*h;P[j+2]+=V[j+2]*h;}}
+ let hT=0;function record(dt){hT+=dt;if(hT<.07)return;hT=0;for(let q=0;q<live;q++){if(AGE[q]<0)continue;HEAD[q]=(HEAD[q]+1)%K;const b=(q*K+HEAD[q])*3;HB[b]=P[q*3];HB[b+1]=P[q*3+1];HB[b+2]=P[q*3+2];}}
+ function draw(){const ink=INK(),acc=ACC(),ti=S.t-S.lastIgn,xw=X0+3.2*ti,ia=ti>0&&ti<6?Math.exp(-ti/2.5):0;let s=0,hn=0;
+  for(let q=0;q<live;q++){if(AGE[q]<0)continue;const a=AGE[q],R=E.RG[RR[q]],base=R.theme>=0?TC[R.theme]:ink,fade=Math.exp(-a/4.5)*Math.min(1,a*6),glow=Math.min(1,(a<.6?R.act:0)+(ia?Math.exp(-((P[q*3]-xw)**2)/.3)*ia:0));
+   const c=night?base.clone().lerp(new THREE.Color(1,1,1),.35+.4*glow):base.clone().lerp(acc,glow*.7);
+   for(let k=0;k<K-1;k++){const i0=((HEAD[q]-k+K)%K),i1=((HEAD[q]-k-1+K)%K),b0=(q*K+i0)*3,b1=(q*K+i1)*3;if(k===0){pos[s*6]=P[q*3];pos[s*6+1]=P[q*3+1];pos[s*6+2]=P[q*3+2];}else{pos[s*6]=HB[b0];pos[s*6+1]=HB[b0+1];pos[s*6+2]=HB[b0+2];}
+    pos[s*6+3]=HB[b1];pos[s*6+4]=HB[b1+1];pos[s*6+5]=HB[b1+2];const f=fade*(1-k/(K-1))*(night?.7:.75)*(.55+.9*glow);col.set([c.r,c.g,c.b,c.r,c.g,c.b],s*6);al[s*2]=f;al[s*2+1]=f*.7;s++;}
+   if(a<.8&&hn<NP){heads.P.set([P[q*3],P[q*3+1],P[q*3+2]],hn*3);heads.C.set([c.r,c.g,c.b],hn*3);heads.Z[hn]=.02+.05*R.act;heads.A[hn]=(1-a/.8)*(.4+.6*R.act);hn++;}}
+  const tg=E.DEC.target;if(tg>=0){heads.P.set([X0,lanes[tg],0],hn*3);heads.C.set([acc.r,acc.g,acc.b],hn*3);heads.Z[hn]=.16+.04*Math.sin(S.t*6);heads.A[hn]=.9;hn++;}   // attention at the now-line
+  g.setDrawRange(0,s*2);for(const k of ['position','color','al'])g.attributes[k].needsUpdate=true;heads.up(hn);nowL.material.color.copy(ink);
+  [0,2,4,6,8,10].forEach((sec,k)=>place(tick[k],new THREE.Vector3(X0+U*sec,-2.15,0),-14,4));
+  REG.forEach((r,k)=>{const ls=order.filter(i=>E.RG[i].theme===k).map(i=>lanes[i]);if(!ls.length){thl[k].style.opacity=0;return;}place(thl[k],new THREE.Vector3(X0-.2,ls.reduce((a,b)=>a+b,0)/ls.length,0),-thl[k].offsetWidth-6,-7);});}
+ function cam(t){camera.position.set(.5+Math.sin(t*.05)*.6,.2+Math.sin(t*.037)*.2,12.2);camera.lookAt(.5,-.1,0);}
+ return {scene,init,step,draw,record,cam,labels:[...tick,...thl],onDecide(e){branch={t:S.t,k:E.DEC.winner,tgt:e.targetIdx};},mats:[mat,heads.m],q(l){live=Math.floor(NP*[.4,.7,1][l]);},cap:'Stream · consciousness as a river through time. The present enters at the left, the recent past drifts right as fading currents, a decision forks the flow, an ignition widens it.'};}
+
+/* ===================== LOOK 2 · FIELD (interference, Chladni) =====================
+   Damped 2-D wave equation u_tt = c²∇²u − γu_t + Σ sources, solved on the GPU (leapfrog, fixed dt within CFL) on a clamped circular membrane.
+   Each real region is a point source at its real (x, z) position: amplitude follows its activity, phase = its own oscillator phase on a
+   shared carrier. In-phase regions interfere into standing geometry; incoherent regions give noise. A time-averaged energy channel marks
+   the nodal lines where Chladni sand would settle. */
+function Field(){const scene=new THREE.Scene(),N=[128,192,256][QL],NS=80;let gpu=null,uVar=null,steps=[3,5,7][QL],ok=true,srcN=0;
+ const SRC=Array.from({length:NS},()=>new THREE.Vector4());
+ const plane=new THREE.Mesh(new THREE.CircleGeometry(2.4,160),new THREE.ShaderMaterial({transparent:true,extensions:{derivatives:true},uniforms:{tU:{value:null},uNight:{value:0},uT:{value:0},uIgn:{value:0},uG:{value:1},uE:{value:1}},
+  vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+  fragmentShader:`uniform sampler2D tU;uniform float uNight,uT,uIgn,uG,uE;varying vec2 vUv;
+  void main(){vec4 c=texture2D(tU,vUv);float u=c.r*uG,en=c.b*uE;vec2 p=vUv*2.-1.;float r=length(p);
+   float sand=1.-smoothstep(.04,.2,en);sand*=smoothstep(.97,.9,r);                                          // nodal lines: low time-averaged energy (where sand settles)
+   float k=u*1.2;float iso=1.-smoothstep(0.,1.,abs(fract(k)-.5)/max(fwidth(k)*1.5,.02)-.0);iso*=.35;            // soft isolines of displacement
+   vec3 ink=uNight<.5?vec3(.11,.1,.71):vec3(.62,.7,1.),acc=uNight<.5?vec3(0.,.6,1.):vec3(.7,.95,1.);
+   float s=clamp(u*.5,-1.,1.);vec3 col=mix(ink,acc,clamp(s*.5+.5,0.,1.));
+   float a=abs(s)*(uNight<.5?.22:.3)+iso*.25*clamp(abs(s)*2.,0.,1.)+sand*(uNight<.5?.5:.65);col=mix(col,ink,sand*.7);
+   a*=smoothstep(1.,.95,r);a+=uIgn*.2*exp(-r*r*2.);col=mix(col,acc,uIgn*.3);gl_FragColor=vec4(col,a);}`}));
+ plane.rotation.x=-.95;scene.add(plane);
+ const rim=new THREE.Mesh(new THREE.RingGeometry(2.38,2.4,160),new THREE.MeshBasicMaterial({color:0x1c19b5,transparent:true,opacity:.35,side:THREE.DoubleSide}));rim.rotation.x=-.95;scene.add(rim);
+ const dots=ptsLayer(NS,scene);const thl=REG.map(r=>mkLabel(r[1],r[2]));
+ function initGPU(){try{gpu=new GPUComputationRenderer(N,N,renderer);const t0=gpu.createTexture();uVar=gpu.addVariable('tU',`
+  uniform float uDt,uC,uDamp,uN;uniform vec4 uSrc[${NS}];
+  void main(){vec2 uv=gl_FragCoord.xy/resolution.xy;vec2 p=uv*2.-1.;vec4 c=texture2D(tU,uv);
+   if(length(p)>.98){gl_FragColor=vec4(0.,0.,c.b*.99,1.);return;}                                         // clamped rim
+   vec2 e=1./resolution.xy;float lap=texture2D(tU,uv+vec2(e.x,0.)).r+texture2D(tU,uv-vec2(e.x,0.)).r+texture2D(tU,uv+vec2(0.,e.y)).r+texture2D(tU,uv-vec2(0.,e.y)).r-4.*c.r;
+   float dx=2./resolution.x;float f=0.;for(int i=0;i<${NS};i++){if(float(i)>=uN)break;vec4 s=uSrc[i];vec2 d=p-s.xy;float d2=dot(d,d);if(d2<.012)f+=s.z*s.w*exp(-d2/.0012);}
+   float un=2.*c.r-c.g+uDt*uDt*(uC*uC*lap/(dx*dx)+f)-uDamp*uDt*(c.r-c.g);
+   gl_FragColor=vec4(un,c.r,mix(c.b,un*un,.004),1.);}`,t0);
+  gpu.setVariableDependencies(uVar,[uVar]);const U=uVar.material.uniforms;U.uDt={value:.7*(2/N)/1.4142};U.uC={value:1};U.uDamp={value:.9};U.uN={value:0};U.uSrc={value:SRC};
+  uVar.wrapS=uVar.wrapT=THREE.ClampToEdgeWrapping;const err=gpu.init();if(err){console.warn(err);ok=false;}}catch(e){console.warn(e);ok=false;}}
+ let simT=0,gT=0,fb=null;const OM=26;     // carrier angular frequency (rad per unit wave time)
+ function step(h){}
+ function frame(dt){if(!ok||!gpu)return;const U=uVar.material.uniforms,dts=U.uDt.value,ti=S.t-S.lastIgn,ign=ti>0&&ti<3.5?Math.exp(-ti/1.2):0,dsc=S.t-E.DEC.last;srcN=Math.min(NS,E.RG.length);
+  for(let n=0;n<steps;n++){simT+=dts;E.RG.forEach((R,i)=>{if(i>=NS)return;const amp=(.25+2.2*R.act+.6*Math.min(1,R.rate))*(i===E.DEC.target&&dsc<1.5?2.5:1)*(1+ign*2);
+    const ph=ign>.05?0:R.ph;SRC[i].set(R.p[0]*.9,R.p[2]*.9*1.6,amp*60,Math.sin(OM*simT+ph));});U.uN.value=srcN;gpu.compute();}
+  plane.material.uniforms.tU.value=gpu.getCurrentRenderTarget(uVar).texture;plane.material.uniforms.uIgn.value=ign;
+  if((gT+=dt)>.5){gT=0;const rt=gpu.getCurrentRenderTarget(uVar);if(!fb)fb=new Float32Array(N*N*4);renderer.readRenderTargetPixels(rt,0,0,N,N,fb);let su=0,se=0,n=0;   // auto-gain: normalise the display only (dynamics untouched)
+   for(let y=0;y<N;y+=3)for(let x=0;x<N;x+=3){const dx=x/N*2-1,dy=y/N*2-1;if(dx*dx+dy*dy>.8)continue;const j=(y*N+x)*4;su+=fb[j]*fb[j];se+=fb[j+2];n++;}
+   if(n&&su>0){const rms=Math.sqrt(su/n),me=se/n,U2=plane.material.uniforms;U2.uG.value+=(1/(rms*1.2)-U2.uG.value)*.5;U2.uE.value+=(1/(me+1e-12)-U2.uE.value)*.5;}}}
+ function draw(){const ink=INK();rim.material.color.copy(ink);plane.material.uniforms.uNight.value=night?1:0;const m=plane.matrixWorld;let n=0;const cen=REG.map(()=>[0,0,0,0]);
+  E.RG.forEach((R,i)=>{if(i>=NS)return;const v=new THREE.Vector3(R.p[0]*.9*2.4,R.p[2]*.9*1.6*2.4,.01).applyMatrix4(m),c=R.theme>=0?TC[R.theme]:ink;dots.P.set([v.x,v.y,v.z],n*3);dots.C.set(night?[c.r*.5+.5,c.g*.5+.5,c.b*.5+.5]:[c.r,c.g,c.b],n*3);dots.Z[n]=.02+.05*R.act+(i===E.DEC.target?.05:0);dots.A[n]=.5+.5*R.act;n++;
+   if(R.theme>=0){const q=cen[R.theme];q[0]+=v.x;q[1]+=v.y;q[2]+=v.z;q[3]++;}});dots.up(n);
+  REG.forEach((r,k)=>{const q=cen[k];if(!q[3]){thl[k].style.opacity=0;return;}thl[k].style.opacity=0;});}
+ function cam(t){const a=t*.03;camera.position.set(Math.sin(a)*.8,4.6,7.2+Math.cos(a)*.3);camera.lookAt(0,-.6,0);}
+ return {scene,init(){if(!gpu)initGPU();},step,frame,draw,cam,labels:thl,mats:[dots.m],q(l){steps=[2,4,7][l];},cap:'Field · each real region is a wave source whose phase follows its own rhythm. When regions fall into step, the membrane sings in standing geometry; when they do not, it is noise.'};}
+
+/* ===================== LOOK 3 · MIRROR (the self-model) =====================
+   Two point shells on the same directions (each point belongs to the real region nearest its direction). Outer shell: what is (each region's
+   live activity sets its radius). Inner shell: what the mind predicts it is (the engine's forecast, radius grows with confidence). Points are
+   masses on radial springs (semi-implicit Euler). Tension lines join each region's actual and predicted anchors, weighted by the prediction
+   error. Awareness pulls the shells together; the "I" at the centre brightens with it. */
+function Mirror(){const scene=new THREE.Scene(),NPt=[1400,2600,4200][QL];let live=NPt;
+ const dirs=[],reg=new Int16Array(NPt),A={x:new Float32Array(NPt*3),v:new Float32Array(NPt*3)},B={x:new Float32Array(NPt*3),v:new Float32Array(NPt*3)};
+ for(let i=0;i<NPt;i++){const y=1-2*(i+.5)/NPt,r=Math.sqrt(1-y*y),th=i*2.39996;dirs.push([Math.cos(th)*r,y,Math.sin(th)*r]);}
+ const outer=ptsLayer(NPt,scene),inner=ptsLayer(NPt,scene),core=ptsLayer(3,scene);
+ const tg=new THREE.BufferGeometry(),tp=new Float32Array(80*6),tc=new Float32Array(80*6),ta=new Float32Array(160);tg.setAttribute('position',new THREE.BufferAttribute(tp,3));tg.setAttribute('color',new THREE.BufferAttribute(tc,3));tg.setAttribute('al',new THREE.BufferAttribute(ta,1));
+ const tmat=lineMat(),tl=new THREE.LineSegments(tg,tmat);tl.frustumCulled=false;scene.add(tl);
+ const rayG=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(),new THREE.Vector3()]),ray=new THREE.Line(rayG,new THREE.LineBasicMaterial({color:0x0099ff,transparent:true,opacity:.6}));scene.add(ray);
+ const shell=r=>new THREE.Mesh(new THREE.SphereGeometry(r,64,48),new THREE.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{uC:{value:new THREE.Color()},uA:{value:.15}},vertexShader:`varying vec3 vN,vV;void main(){vN=normalize(normalMatrix*normal);vec4 mv=modelViewMatrix*vec4(position,1.);vV=normalize(-mv.xyz);gl_Position=projectionMatrix*mv;}`,fragmentShader:`uniform vec3 uC;uniform float uA;varying vec3 vN,vV;void main(){float f=1.-abs(dot(vN,vV));gl_FragColor=vec4(uC,pow(f,3.)*uA);}`}));
+ const so=shell(1),si=shell(1);scene.add(so,si);
+ const lab=[mkLabel('what is · live brain state',null,true),mkLabel('what I predict I am',null,true),mkLabel('I',null,true)];
+ function init(){const D=E.RG.map(r=>r.dir);for(let i=0;i<NPt;i++){let b=0,bd=-9;D.forEach((d,k)=>{const s=d[0]*dirs[i][0]+d[1]*dirs[i][1]+d[2]*dirs[i][2];if(s>bd){bd=s;b=k;}});reg[i]=b;for(let k=0;k<3;k++){A.x[i*3+k]=dirs[i][k]*2.2;B.x[i*3+k]=dirs[i][k]*1.6;}}}
+ const RA=r=>2.0+.55*r.act+.12*Math.min(1,r.rate),conf=()=>1-Math.min(1,S.err/.05),RB=r=>(1.45+.5*conf())+.55*r.pred+.12*Math.min(1,r.rate)*conf();
+ function step(h){const t=S.t,aw=S.aware;
+  for(let i=0;i<live;i++){const R=E.RG[reg[i]],d=dirs[i],ra=RA(R),rb=RB(R)*(1-aw*.25)+ra*aw*.25,sh=R.err*1.5;                     // awareness = convergence
+   for(const [O,rt,k,c,j] of [[A,ra,40,5,sh*.4],[B,rb,28,4,sh]])for(let q=0;q<3;q++){const ix=i*3+q,tgt=d[q]*rt+Math.sin(t*7+i*1.7+q)*j*.08;O.v[ix]+=(k*(tgt-O.x[ix])-c*O.v[ix]+gauss()*j*2)*h;O.x[ix]+=O.v[ix]*h;}}}
+ function draw(){const ink=INK(),acc=ACC(),red=RED();so.material.uniforms.uC.value.copy(ink);si.material.uniforms.uC.value.copy(acc);so.scale.setScalar(2.05);si.scale.setScalar(1.45+.5*conf());so.material.uniforms.uA.value=night?.35:.22;si.material.uniforms.uA.value=(night?.3:.18)*(.5+conf());
+  for(let i=0;i<live;i++){const R=E.RG[reg[i]],c=R.theme>=0?TC[R.theme].clone().lerp(ink,.4):ink;outer.P.set([A.x[i*3],A.x[i*3+1],A.x[i*3+2]],i*3);outer.C.set(night?[c.r*.5+.45,c.g*.5+.45,c.b*.5+.5]:[c.r,c.g,c.b],i*3);outer.Z[i]=.022+.03*R.act;outer.A[i]=(night?.55:.5)+.4*R.act;
+   inner.P.set([B.x[i*3],B.x[i*3+1],B.x[i*3+2]],i*3);inner.C.set([acc.r,acc.g,acc.b],i*3);inner.Z[i]=.018+.02*R.pred;inner.A[i]=(night?.45:.38)*(.5+.5*conf())+.3*Math.min(1,R.err*12)*Math.random();}
+  outer.up(live);inner.up(live);
+  let n=0;E.RG.forEach((R,k)=>{if(k>=80)return;const d=R.dir,e=Math.min(1,R.err*12);if(e<.04)return;const a=RA(R),b=RB(R);tp.set([d[0]*a,d[1]*a,d[2]*a,d[0]*b,d[1]*b,d[2]*b],n*6);const c=red.clone().lerp(acc,1-e);tc.set([c.r,c.g,c.b,c.r,c.g,c.b],n*6);ta[n*2]=e*.8;ta[n*2+1]=e*.3;n++;});
+  tg.setDrawRange(0,n*2);for(const k of ['position','color','al'])tg.attributes[k].needsUpdate=true;
+  const aw=S.aware,ti=S.t-S.lastIgn,ig=ti>0&&ti<4?Math.exp(-ti/1.3):0;core.P.set([0,0,0,0,0,0,0,0,0]);core.C.set([...[ink.r,ink.g,ink.b],...[acc.r,acc.g,acc.b],...[acc.r,acc.g,acc.b]]);
+  core.Z.set([.05+.05*aw,.25+.6*aw+ig*.8,1.2*ig]);core.A.set([.95,.25+.45*aw,.35*ig]);core.up(3);
+  const tg2=E.DEC.target;if(tg2>=0){const R=E.RG[tg2],a=RA(R);rayG.setFromPoints([new THREE.Vector3(),new THREE.Vector3(R.dir[0]*a,R.dir[1]*a,R.dir[2]*a)]);ray.material.opacity=.25+.5*Math.exp(-(S.t-E.DEC.last)/2);ray.visible=true;}else ray.visible=false;ray.material.color.copy(acc);
+  place(lab[0],new THREE.Vector3(0,-2.3,0),-80,10);place(lab[1],new THREE.Vector3(0,-(1.45+.5*conf()),0),-62,-22);place(lab[2],new THREE.Vector3(0,0,0),10,-14);}
+ function cam(t){const a=t*.06;camera.position.set(Math.sin(a)*8.6,1.4+Math.sin(t*.04)*.6,Math.cos(a)*8.6);camera.lookAt(0,0,0);}
+ return {scene,init,step,draw,cam,labels:lab,mats:[outer.m,inner.m,core.m,tmat],q(l){live=Math.floor(NPt*[.45,.75,1][l]);},cap:'Mirror · the outer shell is what is; the inner shell is what the mind predicts it is. Red tension lines are prediction error. As awareness grows the shells converge on the "I" at the centre.'};}
+
+/* ---------- look switcher ---------- */
+const LOOKS={stream:Stream(),field:Field(),mirror:Mirror()};let look=null,lookName='';
+function setLook(n){if(!LOOKS[n])n='stream';lookName=n;look=LOOKS[n];Object.entries(LOOKS).forEach(([k,L])=>L.labels.forEach(el=>el.style.display=k===n?'':'none'));if(E.ready&&!look.inited){look.init();look.inited=true;}
+ document.querySelectorAll('#looks button').forEach(b=>b.classList.toggle('on',b.dataset.l===n));$('#cap').textContent=look.cap;const u=new URL(location);u.searchParams.set('look',n);history.replaceState(null,'',u);applyPal();}
+document.querySelectorAll('#looks button').forEach(b=>b.onclick=()=>setLook(b.dataset.l));
+addEventListener('keydown',e=>{const k={'1':'stream','2':'field','3':'mirror',s:'stream',f:'field',m:'mirror'}[e.key];if(k)setLook(k);if(e.key==='n')setPal(!night);});
+function applyPal(){Object.values(LOOKS).forEach(L=>L.mats.forEach(blend));}
+function setPal(n){night=n;document.body.classList.toggle('night',n);$('#pal').textContent='palette: '+(n?'night sky':'light');applyPal();}
+$('#pal').onclick=()=>setPal(!night);
+/* ---------- inputs & hooks ---------- */
+addEventListener('pointermove',e=>E.input({ptr:Math.hypot(e.movementX||0,e.movementY||0)/300,side:e.clientX<innerWidth/2?'L':'R'}));
+let mic=null,buf=null;$('#mic').onclick=async()=>{if(mic){mic.st.getTracks().forEach(t=>t.stop());mic=null;$('#mic').textContent='mic: off';return;}
+ try{const st=await navigator.mediaDevices.getUserMedia({audio:true}),ac=new AudioContext(),an=ac.createAnalyser();an.fftSize=512;ac.createMediaStreamSource(st).connect(an);mic={st,an};buf=new Float32Array(512);$('#mic').textContent='mic: listening';}catch(e){$('#mic').textContent='mic: blocked';}};
+function micLevel(){if(!mic)return 0;mic.an.getFloatTimeDomainData(buf);let s=0;for(const x of buf)s+=x*x;return Math.min(1,Math.sqrt(s/buf.length)*6);}
+addEventListener('message',e=>{const d=e.data;if(!d||typeof d!=='object')return;if(d.type==='tcf-section')E.section(d.section);if(d.type==='tcf-speaking')S.vext=Math.max(0,Math.min(1,+d.level||0));if(d.type==='tcf-bot-event')E.input({bump:.12});});
+E.on(ev=>{if(ev.kind==='decide'){Object.values(LOOKS).forEach(L=>L.onDecide&&L.onDecide(ev));thought();}if(window.parent!==window)window.parent.postMessage({type:'thira-event',event:ev,source:'mind'},'*');});
+function thought(){$('#thought').innerHTML='<b>thought stream · decisions</b>'+E.DEC.log.slice(0,4).map(d=>`<div class="dc"><span class="m m-${d.mode}">${d.mode}</span> → <b>${d.target}</b>${d.region?' · '+REG.find(r=>r[0]===d.region)[1]:''} <i>t=${d.t}s</i><br><small>${d.winner} won · evidence MB ${d.evidence.MB} · CX ${d.evidence.CX} · LH ${d.evidence.LH}</small><br><small>${d.reason}</small></div>`).join('');}
+function hud(){const s=S,D=E.DEC;$('#hud').innerHTML=`<b>mind · ${lookName}</b><br>awareness ${s.aware.toFixed(2)} · workspace G ${s.G.toFixed(2)}<br>prediction error ${s.err.toFixed(3)} · coherence r ${s.r.toFixed(2)}<br>ignitions ${s.ignN} · decisions ${D.n} · mode ${D.mode}<br>race`+
+ ['MB','CX','LH'].map((k,i)=>`<div class="bar"><span>${['mushroom body','central cx','lateral horn'][i]}</span><i style="width:${Math.min(100,D.X[i]*180)}%"></i><em>${D.X[i].toFixed(2)}</em></div>`).join('')+(E.ready?'':'<br>FlyWire data: loading…');}
+/* ---------- main loop: fixed steps ---------- */
+const HN=1/120;let acc=0,last=0,fps=60,qT=0;const clock=new THREE.Clock();
+function resize(){renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.fov=camera.aspect<1?62:40;camera.updateProjectionMatrix();Object.values(LOOKS).forEach(L=>L.mats.forEach(m=>{if(m.uniforms&&m.uniforms.uS)m.uniforms.uS.value=renderer.getPixelRatio()*innerHeight/900;}));}
+addEventListener('resize',resize);resize();
+function render(){const now=clock.getElapsedTime(),dt=Math.min(now-last,.1);last=now;fps+=(1/Math.max(dt,1e-3)-fps)*.05;qT+=dt;
+ if(qT>3){qT=0;if(fps<26&&QL>0&&!Q.has('q')){QL--;renderer.setPixelRatio(1);resize();Object.values(LOOKS).forEach(L=>L.q(QL));}}            // adaptive quality
+ if(E.ready&&look){acc+=dt;let n=0;while(acc>=HN&&n<12){E.input({voice:Math.max(micLevel(),S.vext)});E.step(HN);look.step(HN);acc-=HN;n++;}if(n===12)acc=0;
+  look.record&&look.record(dt);look.frame&&look.frame(dt);look.draw();}
+ look&&look.cam(now);renderer.render(look?look.scene:new THREE.Scene(),camera);
+ if(Math.floor(now*4)!==render.h){render.h=Math.floor(now*4);hud();if(window.parent!==window)window.parent.postMessage({type:'thira-state',source:'mind',state:{...E.snapshot(),look:lookName}},'*');}}
+setPal(night);setLook(Q.get('look')||'stream');
+E.load('data/flywire-neuropils.json').then(()=>{Object.values(LOOKS).forEach(L=>L.inited=false);look.init();look.inited=true;thought();}).catch(e=>{$('#credit').innerHTML='FlyWire data: <b>not connected yet</b> (data/flywire-neuropils.json could not be loaded)';});
+renderer.setAnimationLoop(render);
+window.mindState=()=>({...E.snapshot(),look:lookName,quality:QL});window.mindLook=setLook;window.mindPalette=setPal;window.mindDecisions=()=>E.DEC.log.slice();window.__ready=true;
+</script></body></html>

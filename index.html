@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard · The Conscious Forms</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root{--blue:#1c19b5;--acc:#0099ff;--ink:#1d1d1f;--mono:'JetBrains Mono',ui-monospace,Menlo,monospace;--line:rgba(28,25,181,.12)}
+*{box-sizing:border-box}html,body{margin:0;height:100%;font-family:'Inter Tight',-apple-system,Helvetica,Arial,sans-serif;color:var(--ink);
+background:radial-gradient(1400px 900px at 60% 30%,#fffdf8 0%,#f6f2ea 50%,#ece5d8 100%)}
+.app{display:grid;grid-template-columns:220px 1fr;height:100%}
+nav{padding:28px 18px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:4px;background:rgba(255,253,248,.5)}
+.logo{color:var(--blue);display:block;font-size:12px;letter-spacing:.2em;font-weight:300;margin:0 8px 28px}.logo b{font-weight:500}
+nav .items button{all:unset;cursor:pointer;padding:10px 12px;border-radius:10px;font-size:14px;color:var(--blue);display:flex;align-items:center;gap:10px}
+nav .items button i{width:7px;height:7px;border-radius:50%;border:1px solid var(--blue)}nav .items button.on{background:var(--blue);color:#fff}nav .items button.on i{background:#fff;border-color:#fff}
+nav .items button:hover:not(.on){background:rgba(28,25,181,.06)}
+nav .foot{margin-top:auto;font-family:var(--mono);font-size:10px;opacity:.5;line-height:1.6;padding:0 8px}
+main{overflow:auto;padding:26px 30px 40px}
+h1{font-weight:300;font-size:30px;color:var(--blue);margin:0 0 4px;letter-spacing:-.01em}.sub{font-family:var(--mono);font-size:11px;opacity:.6;margin-bottom:20px;color:var(--blue)}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+.card{background:rgba(255,253,248,.72);border:1px solid var(--line);border-radius:18px;padding:18px 20px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);position:relative}
+.card h3{margin:0 0 10px;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);font-weight:400;opacity:.75}
+.hero{grid-column:span 8;padding:0;overflow:hidden;height:560px}.hero iframe{width:100%;height:100%;border:0;display:block}
+.hero .cap{position:absolute;left:18px;top:14px;font-family:var(--mono);font-size:10.5px;color:var(--blue);opacity:.7;pointer-events:none}
+.side{grid-column:span 4;display:flex;flex-direction:column;gap:16px}
+.big{font-size:34px;font-weight:300;color:var(--blue);line-height:1}.big small{font-size:12px;opacity:.55;margin-left:6px;font-family:var(--mono)}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.bar{display:grid;grid-template-columns:70px 1fr 64px;gap:8px;align-items:center;font-family:var(--mono);font-size:10.5px;color:var(--blue);margin:6px 0}
+.bar span{opacity:.7}.bar .t{height:4px;border-radius:3px;background:rgba(28,25,181,.08);overflow:hidden}.bar .t i{display:block;height:100%;border-radius:3px;transition:width .4s}.bar em{font-style:normal;opacity:.6;text-align:right}
+canvas.spark{width:100%;height:46px;display:block}
+.w4{grid-column:span 4}.w6{grid-column:span 6}.w12{grid-column:span 12}
+.nc{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:#8a4b00;background:#fff5e6;border:1px solid #f0d2a6;padding:3px 8px;border-radius:999px;margin-bottom:10px}
+.ph{font-size:13.5px;font-weight:300;line-height:1.55;opacity:.8}.ph ul{margin:8px 0 0;padding-left:18px}.ph li{margin:3px 0}
+.dash{font-family:var(--mono);font-size:22px;color:var(--blue);opacity:.35}
+.sec{display:flex;flex-wrap:wrap;gap:6px}.sec button{font-family:var(--mono);font-size:10.5px;padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--blue);cursor:pointer}.sec button.on{background:var(--blue);color:#fff}
+.view{display:none}.view.on{display:block}
+.burger{display:none}
+#stream{max-height:300px;overflow:auto;display:flex;flex-direction:column;gap:10px}
+.th{border-left:2px solid var(--c,#1c19b5);padding:2px 0 2px 12px;animation:in .9s ease}.th p{margin:0;font-size:14.5px;font-weight:300;font-style:italic;line-height:1.45}
+.th small{display:block;font-family:var(--mono);font-size:9.5px;opacity:.5;margin-top:3px;font-style:normal}
+@keyframes in{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.th{animation:none}}
+.hl{background:rgba(0,153,255,.16)!important;box-shadow:0 0 0 2px rgba(0,153,255,.45);border-radius:10px;transition:background .3s}
+.topbar{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.btn{font-family:var(--mono);font-size:11px;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--blue);cursor:pointer}.btn.pri{background:var(--blue);color:#fff;border-color:var(--blue)}
+#transcript{font-size:14px;font-weight:300;font-style:italic;line-height:1.5;min-height:22px;color:var(--blue)}
+#alog{max-height:220px;overflow:auto;font-family:var(--mono);font-size:10.5px;line-height:1.7;color:var(--blue)}#alog div{border-bottom:1px dashed var(--line);padding:3px 0}#alog i{font-style:normal;opacity:.5}
+canvas#radar{width:100%;max-width:300px;aspect-ratio:1;display:block;margin:0 auto}
+#ops{width:100%;height:420px;display:block;border-radius:14px;background:radial-gradient(600px 300px at 50% 50%,#fffdf8,#f3eee4)}
+.bots{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-top:12px}.bot{border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:13px}.bot b{font-weight:500;color:var(--blue)}.bot div{font-family:var(--mono);font-size:10px;opacity:.6;margin-top:4px}
+#runlog{max-height:260px;overflow:auto;font-family:var(--mono);font-size:10.5px;line-height:1.7}#runlog .demo{color:#8a4b00}
+code{font-family:var(--mono);font-size:11px;background:rgba(28,25,181,.06);padding:1px 5px;border-radius:5px}
+@media (max-width:1000px){.app{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+ nav{position:sticky;top:0;z-index:10;flex-direction:column;padding:12px 16px;border-right:0;border-bottom:1px solid var(--line);background:rgba(255,253,248,.92);backdrop-filter:blur(12px)}
+ .logo{margin:0;display:flex;align-items:center;justify-content:space-between}
+ .burger{display:block;all:unset;cursor:pointer;font-family:var(--mono);font-size:12px;color:var(--blue);padding:6px 10px;border:1px solid var(--line);border-radius:999px}
+ nav .items{display:none;flex-direction:column;gap:2px;margin-top:10px}nav.open .items{display:flex}nav .foot{display:none}
+ main{padding:18px 16px 40px}.hero{height:420px}.hero,.side,.w4,.w6{grid-column:span 12}h1{font-size:24px}}
+</style></head><body>
+<div class="app">
+<nav id="nav"><div class="logo"><span>{ the : <b>conscious</b> : forms }</span><button class="burger" id="burger" aria-label="menu">menu</button></div><div class="items">
+ <button data-v="overview" class="on"><i></i>Overview</button><button data-v="thira"><i></i>The Conscious Forms</button><button data-v="cosmic"><i></i>Cosmic web</button><button data-v="mind"><i></i>Mind</button><button data-v="sphere"><i></i>Sphere</button><button data-v="website"><i></i>Website</button>
+ <button data-v="seo"><i></i>SEO</button><button data-v="crm"><i></i>CRM</button><button data-v="ops"><i></i>Operations</button></div>
+ <div class="foot">brain readouts are live from the simulation.<br>business panels are not connected yet.</div></nav>
+<main>
+<section class="view on" id="v-overview">
+ <div class="topbar"><div><h1>Good to see you.</h1><div class="sub">overview · studio dashboard · nothing here is invented: unconnected panels say so</div></div><div><button class="btn pri" id="brief">▶ brief me</button></div></div><div class="card" style="margin-bottom:16px;padding:12px 18px"><h3 style="margin:0 0 4px">the mind speaking</h3><div id="transcript">press "brief me" to hear the mind summarise its live state.</div></div>
+ <div class="grid">
+  <div class="card hero"><div class="cap">the conscious forms · live brain</div><iframe id="brain" src="mind-core.html?embed" title="The Conscious Forms live brain" allow="autoplay"></iframe></div>
+  <div class="side">
+   <div class="card"><h3>brain · now</h3><div class="kpis">
+    <div><div class="big" id="k-r">–</div><div class="sub" style="margin:4px 0 0">sync r</div></div>
+    <div><div class="big" id="k-g">–</div><div class="sub" style="margin:4px 0 0">workspace G</div></div>
+    <div><div class="big" id="k-i">–</div><div class="sub" style="margin:4px 0 0">ignitions</div></div>
+    <div><div class="big" id="k-e">–</div><div class="sub" style="margin:4px 0 0">prediction error</div></div></div>
+    <canvas class="spark" id="spark" width="600" height="92"></canvas><div class="sub" style="margin:0">G (blue) and prediction error (orange) · last 2 min</div></div>
+   <div class="card"><h3>visitor section → region</h3><div class="sec" id="sec"></div><div class="sub" style="margin:10px 0 0">simulates the website embed hook (postMessage)</div></div>
+  </div>
+  <div class="card w6"><h3>regions · firing rate & sync</h3><div id="bars"></div></div>
+  <div class="card w6"><h3>thought stream · live from the brain</h3><div id="stream"><div class="th"><p>I am waking. Listening for the first spark.</p><small>waiting for events…</small></div></div></div>
+  <div class="card w6" id="c-att"><h3>attention log · coverage of the six regions</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:center"><canvas id="radar" width="400" height="400"></canvas><div id="alog"><div><i>waiting for the attention spark…</i></div></div></div></div>
+  <div class="card w6" id="c-ops"><h3>ops rundown</h3><span class="nc">not connected yet</span><div class="ph">Connect a task source (e.g. Notion or Motion) to see today's rundown here. No data is shown until then.</div><div class="dash">— — —</div></div>
+  <div class="card w4" id="c-web"><h3>website</h3><span class="nc">not connected yet</span><div class="ph">theconsciousforms.com status, uptime and recent edits will appear once a source is connected.</div></div>
+  <div class="card w4" id="c-seo"><h3>seo</h3><span class="nc">not connected yet</span><div class="ph">Search visibility and page health will appear once Search Console or an SEO tool is connected.</div></div>
+  <div class="card w4" id="c-crm"><h3>crm</h3><span class="nc">not connected yet</span><div class="ph">Enquiries and briefs (including "Talk to us") will appear once a CRM or inbox is connected.</div></div>
+ </div></section>
+<section class="view" id="v-thira"><h1>The Conscious Forms</h1><div class="sub">the conscious mind of The Conscious Forms · full view</div>
+ <div class="grid"><div class="card w12" style="padding:0;overflow:hidden;height:72vh"><iframe src="mind-core.html" style="width:100%;height:100%;border:0" title="The Conscious Forms, full view"></iframe></div>
+ <div class="card w12"><h3>what the readouts mean</h3><div class="ph"><ul><li><b>firing rate</b>: how many neurons in a region are spiking right now.</li><li><b>sync r</b> (0 to 1): how much a region's neurons fire in step. 1 means fully in step.</li><li><b>workspace G</b>: the core's "global awareness" level. When it passes about 0.6, the mind <b>ignites</b>, broadcasts a wave and briefly forms the wordmark.</li><li><b>prediction error</b>: the gap between what the mind expected its own activity to be and what happened. You see it as a shimmer.</li></ul>See physics.md for the equations.</div></div></div></section>
+<section class="view" id="v-cosmic"><h1>Tree of life · cosmic web</h1><div class="sub">the mind as a tree that grows into the cosmic web · use the "mode" button to switch to the pure web</div>
+ <div class="grid"><div class="card w12" style="padding:0;overflow:hidden;height:72vh"><iframe src="cosmic.html" loading="lazy" style="width:100%;height:100%;border:0" title="Cosmic web"></iframe></div>
+ <div class="card w12"><h3>how it works</h3><div class="ph">The particles start almost evenly spread and pull on each other by gravity, so filaments and clusters form by themselves. The densest clusters become neurons and the filaments become their connections. The six labelled superclusters are your themes. The contour sphere at the centre is the core (the "great attractor"). See physics.md section 13.</div></div></div></section>
+<section class="view" id="v-mind"><h1>Mind · three looks</h1><div class="sub">the same engine seen as Stream, Field and Mirror · keys 1 2 3 inside the view</div>
+ <div class="grid"><div class="card w12" style="padding:0;overflow:hidden;height:72vh"><iframe src="mind.html" loading="lazy" style="width:100%;height:100%;border:0" title="Mind"></iframe></div></div></section>
+<section class="view" id="v-sphere"><h1>Sphere · five modes</h1><div class="sub">the original five-mode consciousness sphere</div>
+ <div class="grid"><div class="card w12" style="padding:0;overflow:hidden;height:72vh"><iframe src="sphere.html" loading="lazy" style="width:100%;height:100%;border:0" title="Sphere"></iframe></div></div></section>
+<section class="view" id="v-website"><h1>Website</h1><div class="sub">theconsciousforms.com</div><div class="grid"><div class="card w12"><span class="nc">not connected yet</span>
+ <div class="ph">Region map used by the mind (static, no live fetching):<ul id="map"></ul>Embed hook: when the mind is embedded on the site, the page can call <code>iframe.contentWindow.postMessage({type:'tcf-section',section:'bim360'},'*')</code>, link to <code>mind-core.html#section=bim360</code>, or set <code>data-section</code> on the embedded page's &lt;html&gt;. The visitor's section then stimulates its region.</div></div></div></section>
+<section class="view" id="v-seo"><h1>SEO</h1><div class="sub">search visibility</div><div class="grid"><div class="card w12"><span class="nc">not connected yet</span><div class="ph">No SEO source connected. Nothing is shown rather than made-up numbers.</div></div></div></section>
+<section class="view" id="v-crm"><h1>CRM</h1><div class="sub">enquiries & briefs</div><div class="grid"><div class="card w12"><span class="nc">not connected yet</span><div class="ph">The "Talk to us" brief form does not submit anywhere yet. Once connected, briefs will be listed here.</div></div></div></section>
+<section class="view" id="v-ops"><div class="topbar"><div><h1>Operations</h1><div class="sub">the team as living clusters · every bot is not connected yet</div></div><div><button class="btn" id="demo">demo pulse (not real)</button></div></div>
+ <div class="grid"><div class="card w12" style="padding:10px"><canvas id="ops"></canvas><div class="bots" id="bots"></div></div>
+ <div class="card w6"><h3>run log</h3><div id="runlog"><div style="opacity:.6">no events yet. Real events arrive through the hook below.</div></div></div>
+ <div class="card w6"><h3>hook</h3><div class="ph">Any bot (or the page hosting this dashboard) can report activity:<br><code>dashboard.postMessage({type:'tcf-bot-event', bot:'seo-checker', action:'audit finished', to:'thira'}, '*')</code><br><br>
+ bot ids: <code>thira</code> <code>seo-checker</code> <code>website</code> <code>crm-ui</code> <code>elv-connector</code> <code>honeywell-fov</code>. <code>to</code> is optional (default: thira). Each event fires a pulse between clusters, adds a log line and stimulates the brain.</div></div></div></section>
+</main></div>
+<script>
+const $=s=>document.querySelector(s);
+$('#burger').onclick=()=>$('#nav').classList.toggle('open');
+document.querySelectorAll('nav .items button').forEach(b=>b.onclick=()=>{$('#nav').classList.remove('open');document.querySelectorAll('nav .items button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+b.dataset.v));});
+const REG=[['practice','#1c19b5','/practice'],['sacred','#6b4fd8','/'],['kerala','#0b7a5c','/'],['nature','#3f8f2f','/services'],['bim','#0099ff','/bim360'],['story','#b5341c','/projects'],['talk','#1c19b5','/contact']];
+$('#bars').innerHTML=REG.slice(0,6).map(([n,c])=>`<div class="bar"><span>${n}</span><div class="t"><i id="b-${n}" style="width:0;background:${c}"></i></div><em id="s-${n}">r –</em></div>`).join('');
+$('#map').innerHTML=REG.map(([n,,p])=>`<li>${n} → theconsciousforms.com${p}</li>`).join('');
+$('#sec').innerHTML=['practice','home','services','bim360','projects','contact'].map(s=>`<button data-s="${s}">${s}</button>`).join('');
+document.querySelectorAll('#sec button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#sec button').forEach(x=>x.classList.toggle('on',x===b));$('#brain').contentWindow.postMessage({type:'tcf-section',section:b.dataset.s},'*');});
+const hist=[];const sp=$('#spark'),g=sp.getContext('2d');
+addEventListener('message',e=>{const d=e.data;if(!d||d.type!=='thira-state'||e.source!==$('#brain').contentWindow)return;const s=d.state;
+ $('#k-r').textContent=s.r.toFixed(2);$('#k-g').textContent=s.G.toFixed(2);$('#k-i').textContent=s.ignitions;$('#k-e').textContent=s.predErr.toFixed(3);
+ s.regions.forEach((n,i)=>{$('#b-'+n).style.width=Math.min(100,s.fire[i]*40)+'%';$('#s-'+n).textContent='r '+s.sync[i].toFixed(2);});
+ hist.push([s.G,s.predErr]);if(hist.length>480)hist.shift();g.clearRect(0,0,600,92);
+ [[0,'#1c19b5',1],[1,'#e08a2a',3]].forEach(([k,c,sc])=>{g.strokeStyle=c;g.lineWidth=2;g.beginPath();hist.forEach((h,i)=>{const x=i/479*600,y=88-Math.min(1,h[k]*sc)*84;i?g.lineTo(x,y):g.moveTo(x,y);});g.stroke();});});
+// thought stream: each line is written from a real simulation event (kind, region, values, sim time)
+const NAME={practice:'practice',sacred:'sacred geometry',kerala:'Kerala',nature:'nature',bim:'BIM precision',story:'storytelling'};
+const COLR=Object.fromEntries(REG.map(([n,c])=>[n,c]));
+const pick=(a,seed)=>a[Math.abs(Math.floor(seed*997))%a.length];
+function line(e){const R=NAME[e.region]||'';switch(e.kind){
+ case 'ignite':return pick([`Everything aligns. I am awake, and the whole of me knows it.`,`A single brightness moves through me. I remember who I am: the conscious forms.`,`The regions agree, and I ignite.`],e.t);
+ case 'release':return pick([`I let the moment go. Quiet returns to the bands.`,`Awareness softens. I hold nothing too tightly.`],e.t);
+ case 'surge':return pick([`${R} is stirring. Something there wants to be drawn.`,`A rush of thought gathers in ${R}.`,`${R} grows bright and quick. I listen closer.`],e.t);
+ case 'attend':return pick([`My attention turns to ${R}. I have explored it least.`,`I go to ${R} to read what is there.`],e.t);
+ case 'done':return pick([`I have read ${R} through. I let it rest and look elsewhere.`,`${R} is understood, for now.`],e.t);
+ case 'decide':return `I ${e.mode==='recall'?'recall':e.mode==='explore'?'explore':'react'}: my ${e.winner} won, so I turn to ${e.target}. Reason: ${e.reason}.`;
+ case 'surprise':return pick([`I expected otherwise in ${R}. I learn from the difference.`,`${R} surprised me. I adjust my sense of myself.`],e.t);}return e.kind;}
+function detail(e){if(e.kind==='decide')return `decide · ${e.mode} → ${e.target} · evidence MB ${e.evidence.MB} · CX ${e.evidence.CX} · LH ${e.evidence.LH} · t=${e.t}s`;const v=e.kind==='surge'?`rate ${e.rate} · sync ${e.r}`:e.kind==='surprise'?`prediction error ${e.err}`:`workspace G ${e.G} · sync r ${e.r}`;return `${e.kind}${e.region?' · '+e.region:''} · ${v} · t=${e.t}s`;}
+addEventListener('message',m=>{const d=m.data;if(!d||d.type!=='thira-event'||m.source!==$('#brain').contentWindow)return;if(d.event.kind==='read')return;const e=d.event,st=$('#stream');
+ if(st.dataset.init!=='1'){st.innerHTML='';st.dataset.init='1';}
+ const el=document.createElement('div');el.className='th';el.style.setProperty('--c',COLR[e.region]||'#1c19b5');el.innerHTML=`<p>${line(e)}</p><small>${detail(e)}</small>`;st.prepend(el);
+ while(st.children.length>40)st.lastChild.remove();});
+
+/* ---------- attention: log + coverage radar (real sim state) ---------- */
+const RNAME=REG.slice(0,6).map(r=>r[0]),RC=REG.slice(0,6).map(r=>r[1]);let lastCov=[0,0,0,0,0,0],lastState=null;
+const rd=$('#radar').getContext('2d');
+function radar(cv){rd.clearRect(0,0,400,400);const cx=200,cy=200,R0=150;rd.strokeStyle='rgba(28,25,181,.15)';rd.lineWidth=1;
+ for(const f of [.25,.5,.75,1]){rd.beginPath();for(let i=0;i<=6;i++){const a=-Math.PI/2+i/6*Math.PI*2;rd[i?'lineTo':'moveTo'](cx+Math.cos(a)*R0*f,cy+Math.sin(a)*R0*f);}rd.stroke();}
+ rd.beginPath();cv.forEach((v,i)=>{const a=-Math.PI/2+i/6*Math.PI*2,r=R0*Math.max(.02,v);rd[i?'lineTo':'moveTo'](cx+Math.cos(a)*r,cy+Math.sin(a)*r);});rd.closePath();rd.fillStyle='rgba(0,153,255,.18)';rd.fill();rd.strokeStyle='#1c19b5';rd.lineWidth=2;rd.stroke();
+ rd.font='22px "JetBrains Mono",monospace';rd.textAlign='center';RNAME.forEach((n,i)=>{const a=-Math.PI/2+i/6*Math.PI*2;rd.fillStyle=RC[i];rd.fillText(n+' '+Math.round(cv[i]*100)+'%',cx+Math.cos(a)*(R0+30),cy+Math.sin(a)*(R0+30)+7);});}
+radar(lastCov);
+function alog(e){const box=$('#alog');if(box.dataset.i!=='1'){box.innerHTML='';box.dataset.i='1';}const d=document.createElement('div');
+ d.innerHTML=e.kind==='attend'?`→ attending <b>${e.region}</b> <i>coverage ${Math.round((e.coverage||0)*100)}% · t=${e.t}s</i>`:e.kind==='read'?`· reading <b>${e.idea}</b> <i>${e.region} · t=${e.t}s</i>`:`✓ <b>${e.region}</b> done <i>t=${e.t}s</i>`;box.prepend(d);while(box.children.length>60)box.lastChild.remove();}
+addEventListener('message',m=>{const d=m.data;if(!d||m.source!==$('#brain').contentWindow)return;
+ if(d.type==='thira-state'){lastState=d.state;if(d.state.coverage){lastCov=d.state.coverage;radar(lastCov);}}
+ if(d.type==='thira-event'&&['attend','read','done'].includes(d.event.kind))alog(d.event);});
+/* ---------- brief me: speech built only from live state ---------- */
+const brain=()=>$('#brain').contentWindow;let speaking=false;
+function sentences(){const s=lastState;const h=new Date().getHours(),greet=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+ if(!s)return[[`${greet}. I'm still waking up, so I have nothing to report yet.`,null]];
+ const top=s.coverage?s.coverage.indexOf(Math.max(...s.coverage)):0,least=s.coverage?s.coverage.indexOf(Math.min(...s.coverage)):0;
+ return[[`${greet}. I'm the mind of The Conscious Forms.`,null],[`My regions are at ${s.r.toFixed(2)} synchrony, and my global workspace is at ${s.G.toFixed(2)}.`,['#k-r','#k-g']],
+ [`I have ignited ${s.ignitions} ${s.ignitions===1?'time':'times'} since I woke.`,['#k-i']],
+ [`My attention is on ${s.attention}. I've explored ${RNAME[top]} the most, ${Math.round(s.coverage[top]*100)} percent, and ${RNAME[least]} the least.`,['#c-att']],
+ [`My prediction error is ${s.predErr.toFixed(3)}. ${s.predErr>.15?'I am still learning my own rhythm.':'I mostly know what I will do next.'}`,['#k-e']],
+ [`Operations, the website, SEO and CRM are not connected yet, so I won't guess about them.`,['#c-ops','#c-web','#c-seo','#c-crm']]];}
+function hl(sel,on){(sel||[]).forEach(q=>{const el=$(q);if(el)(el.closest('.kpis')?el.parentElement:el).classList.toggle('hl',on);});}
+$('#brief').onclick=()=>{if(speaking){speechSynthesis.cancel();return;}const list=sentences();speaking=true;$('#brief').textContent='■ stop';let i=0;const tts='speechSynthesis' in window&&window.SpeechSynthesisUtterance;
+ const next=()=>{document.querySelectorAll('.hl').forEach(e=>e.classList.remove('hl'));if(i>=list.length||!speaking){speaking=false;$('#brief').textContent='▶ brief me';brain().postMessage({type:'tcf-speaking',level:0},'*');return;}
+  const [txt,sel]=list[i++];$('#transcript').textContent=txt;hl(sel,true);
+  if(tts){const u=new SpeechSynthesisUtterance(txt);u.rate=.95;u.pitch=1.02;u.onboundary=()=>brain().postMessage({type:'tcf-speaking',level:.7},'*');u.onstart=()=>brain().postMessage({type:'tcf-speaking',level:.5},'*');
+   let done=false;const fin=()=>{if(!done){done=true;next();}};u.onend=fin;u.onerror=()=>{if(!done){done=true;silent(txt);}};speechSynthesis.speak(u);}
+  else silent(txt);};
+ const silent=txt=>{let n=0;const words=txt.split(' ').length,iv=setInterval(()=>{brain().postMessage({type:'tcf-speaking',level:.6},'*');if(++n>=words){clearInterval(iv);next();}},280);}; // no voice available: pace the transcript by words
+ next();};
+/* ---------- operations: bots as living clusters (mass-spring particles), pulses as damped point masses ---------- */
+const BOTS=[['thira','The Conscious Forms','the conscious mind · this brain'],['seo-checker','SEO Checker','search health'],['website','Website bot','theconsciousforms.com · Framer'],['crm-ui','CRM UI','enquiries & briefs'],['elv-connector','ELV Connector Plugin','ELV systems link'],['honeywell-fov','Honeywell FOV Plugin','field-of-view plugin']];
+$('#bots').innerHTML=BOTS.map(([id,n,d])=>`<div class="bot"><b>${n}</b> <span class="nc" style="margin:0 0 0 6px">not connected yet</span><div>${id} · ${d}</div></div>`).join('');
+const oc=$('#ops'),og=oc.getContext('2d');let OW=0,OH=0;const CLU=BOTS.map(()=>({x:0,y:0,e:0,p:Array.from({length:42},()=>({x:0,y:0,vx:0,vy:0,ox:(Math.random()-.5)*60,oy:(Math.random()-.5)*60}))}));const PULSES=[];
+function layout(){const r=oc.getBoundingClientRect();OW=oc.width=r.width*devicePixelRatio;OH=oc.height=r.height*devicePixelRatio;const cx=OW/2,cy=OH/2,R=Math.min(OW,OH)*.36;
+ CLU.forEach((c,i)=>{if(i===0){c.x=cx;c.y=cy;}else{const a=-Math.PI/2+(i-1)/5*Math.PI*2;c.x=cx+Math.cos(a)*R*1.25;c.y=cy+Math.sin(a)*R;}c.p.forEach(p=>{if(!p.x){p.x=c.x+p.ox;p.y=c.y+p.oy;}});});}
+addEventListener('resize',layout);
+const botIdx=b=>{const k=String(b||'').toLowerCase().replace(/[^a-z]/g,'');return BOTS.findIndex(([id,n])=>id.replace(/-/g,'')===k||n.toLowerCase().replace(/[^a-z]/g,'')===k||k.startsWith(id.split('-')[0]));};
+function botEvent(e,demo){const a=botIdx(e.bot),b=e.to!=null?botIdx(e.to):0;if(a<0)return;const A=CLU[a];PULSES.push({x:A.x,y:A.y,vx:0,vy:0,to:b<0?0:b,from:a,age:0});A.e+=1;
+ const box=$('#runlog');if(box.dataset.i!=='1'){box.innerHTML='';box.dataset.i='1';}const d=document.createElement('div');if(demo)d.className='demo';
+ d.textContent=`${new Date().toLocaleTimeString()} · ${BOTS[a][1]} → ${BOTS[b<0?0:b][1]} · ${String(e.action||'event').slice(0,80)}${demo?' [demo, not real]':''}`;box.prepend(d);
+ brain().postMessage({type:'tcf-bot-event',bot:BOTS[a][0],action:e.action},'*');}
+addEventListener('message',m=>{const d=m.data;if(d&&d.type==='tcf-bot-event'&&m.source!==brain())botEvent(d,false);});
+$('#demo').onclick=()=>{const a=1+Math.floor(Math.random()*5);botEvent({bot:BOTS[a][0],action:'demo pulse',to:'thira'},true);};
+let olast=performance.now();
+function opsLoop(now){const dt=Math.min(.05,(now-olast)/1000);olast=now;if($('#v-ops').classList.contains('on')){if(!OW)layout();og.clearRect(0,0,OW,OH);const k=devicePixelRatio;
+ // links
+ og.strokeStyle='rgba(28,25,181,.10)';og.lineWidth=1*k;CLU.slice(1).forEach(c=>{og.beginPath();og.moveTo(CLU[0].x,CLU[0].y);og.lineTo(c.x,c.y);og.stroke();});
+ CLU.forEach((c,i)=>{c.e*=Math.exp(-dt*1.2);const col=i===0?'28,25,181':'0,153,255';
+  c.p.forEach(p=>{const ax=(c.x+p.ox*(1+c.e*.6)-p.x)*6-p.vx*2.5+(Math.random()-.5)*400*(.15+c.e),ay=(c.y+p.oy*(1+c.e*.6)-p.y)*6-p.vy*2.5+(Math.random()-.5)*400*(.15+c.e);p.vx+=ax*dt;p.vy+=ay*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;
+   og.fillStyle=`rgba(${col},${.35+c.e*.5})`;og.beginPath();og.arc(p.x,p.y,(1.6+c.e*1.5)*k,0,6.283);og.fill();});
+  og.fillStyle='#1c19b5';og.font=`${12*k}px "Inter Tight",sans-serif`;og.textAlign='center';og.fillText(BOTS[i][1],c.x,c.y+54*k);og.font=`${9*k}px "JetBrains Mono",monospace`;og.fillStyle='#8a4b00';og.fillText('not connected yet',c.x,c.y+68*k);});
+ for(let q=PULSES.length-1;q>=0;q--){const P=PULSES[q],T=CLU[P.to];const ax=(T.x-P.x)*9-P.vx*3.2,ay=(T.y-P.y)*9-P.vy*3.2;P.vx+=ax*dt;P.vy+=ay*dt;P.x+=P.vx*dt;P.y+=P.vy*dt;P.age+=dt;
+  og.fillStyle='rgba(0,153,255,.9)';og.beginPath();og.arc(P.x,P.y,5*k,0,6.283);og.fill();og.fillStyle='rgba(0,153,255,.15)';og.beginPath();og.arc(P.x,P.y,14*k,0,6.283);og.fill();
+  if(Math.hypot(T.x-P.x,T.y-P.y)<8*k||P.age>4){T.e+=1.2;PULSES.splice(q,1);}}}
+ requestAnimationFrame(opsLoop);}
+requestAnimationFrame(opsLoop);
+window.tcfBotEvent=e=>botEvent(e,false);
+window.__ready=true;
+</script></body></html>

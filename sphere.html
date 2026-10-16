@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Consciousness · The Conscious Forms</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;height:100%;background:#f3f4f0;overflow:hidden;font-family:'Inter Tight',-apple-system,Helvetica,Arial,sans-serif}
+canvas{display:block;cursor:grab}canvas:active{cursor:grabbing}
+#pill{position:fixed;left:50%;bottom:12%;transform:translateX(-50%);padding:10px 22px;border-radius:999px;
+background:rgba(255,255,255,.45);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(28,25,181,.18);
+color:#1c19b5;font-size:13px;letter-spacing:.08em;text-transform:lowercase;pointer-events:none;user-select:none}
+body.still #pill{display:none}
+#brand{position:fixed;top:28px;left:0;right:0;text-align:center;color:#1c19b5;font-size:13px;letter-spacing:.22em;font-weight:300}
+#phrase{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);max-width:min(560px,80vw);text-align:center;color:#1c19b5;
+font-size:clamp(18px,2.4vw,28px);font-weight:300;line-height:1.35;padding:18px 28px;border-radius:24px;background:rgba(243,244,240,.82);
+backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;transition:opacity 1.2s ease,filter 1.2s ease;filter:blur(6px);pointer-events:none}
+#phrase.on{opacity:1;filter:blur(0)}#phrase small{display:block;margin-top:10px;font-size:11px;letter-spacing:.2em;opacity:.6}
+#modes{position:fixed;top:56px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:2}#modes button{font:inherit;font-size:11px;letter-spacing:.12em;text-transform:lowercase;padding:6px 12px;border-radius:999px;border:1px solid rgba(28,25,181,.25);background:rgba(255,255,255,.5);color:#1c19b5;cursor:pointer}#modes button.on{background:#1c19b5;color:#fff}body.still #modes,body.still #brand,body.still #phrase{display:none}
+</style>
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
+</head><body>
+<div id="brand">{ the : conscious : forms }</div><div id="phrase"></div><div id="modes"></div><div id="pill">click to explore</div>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+const still=new URLSearchParams(location.search).has('still');
+if(still)document.body.classList.add('still');
+const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setClearColor(0xf3f4f0);
+document.body.appendChild(renderer.domElement);
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(35,1,0.1,100);camera.position.set(0,0,still?3.95:5.2);
+const controls=new OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true;controls.dampingFactor=0.035;controls.rotateSpeed=0.7;controls.enableZoom=false;controls.enablePan=false;controls.autoRotate=!still;controls.autoRotateSpeed=0.6;
+const noise=`
+vec3 mod289(vec3 x){return x-floor(x*(1./289.))*289.;}vec4 mod289(vec4 x){return x-floor(x*(1./289.))*289.;}
+vec4 permute(vec4 x){return mod289(((x*34.)+1.)*x);}vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-0.85373472095314*r;}
+float snoise(vec3 v){const vec2 C=vec2(1./6.,1./3.);const vec4 D=vec4(0.,.5,1.,2.);
+vec3 i=floor(v+dot(v,C.yyy));vec3 x0=v-i+dot(i,C.xxx);vec3 g=step(x0.yzx,x0.xyz);vec3 l=1.-g;
+vec3 i1=min(g.xyz,l.zxy);vec3 i2=max(g.xyz,l.zxy);vec3 x1=x0-i1+C.xxx;vec3 x2=x0-i2+C.yyy;vec3 x3=x0-D.yyy;
+i=mod289(i);vec4 p=permute(permute(permute(i.z+vec4(0.,i1.z,i2.z,1.))+i.y+vec4(0.,i1.y,i2.y,1.))+i.x+vec4(0.,i1.x,i2.x,1.));
+float n_=.142857142857;vec3 ns=n_*D.wyz-D.xzx;vec4 j=p-49.*floor(p*ns.z*ns.z);vec4 x_=floor(j*ns.z);vec4 y_=floor(j-7.*x_);
+vec4 x=x_*ns.x+ns.yyyy;vec4 y=y_*ns.x+ns.yyyy;vec4 h=1.-abs(x)-abs(y);vec4 b0=vec4(x.xy,y.xy);vec4 b1=vec4(x.zw,y.zw);
+vec4 s0=floor(b0)*2.+1.;vec4 s1=floor(b1)*2.+1.;vec4 sh=-step(h,vec4(0.));vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy;vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;
+vec3 p0=vec3(a0.xy,h.x);vec3 p1=vec3(a0.zw,h.y);vec3 p2=vec3(a1.xy,h.z);vec3 p3=vec3(a1.zw,h.w);
+vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));p0*=norm.x;p1*=norm.y;p2*=norm.z;p3*=norm.w;
+vec4 m=max(.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.);m=m*m;
+return 42.*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));}
+float fbm(vec3 p){float f=0.,a=.5;for(int i=0;i<4;i++){f+=a*snoise(p);p*=2.02;a*=.5;}return f;}`;
+const uniforms={uTime:{value:0},uPulse:{value:0},uHover:{value:new THREE.Vector3(0,0,10)},uHoverAmt:{value:0},
+ uRip:{value:Array.from({length:8},()=>new THREE.Vector4(0,0,1,-99))},uJelly:{value:0},
+ uBlue:{value:new THREE.Vector3(28/255,25/255,181/255)},uWhite:{value:new THREE.Vector3(1,1,1)}};
+const mat=new THREE.ShaderMaterial({uniforms,extensions:{derivatives:true},
+vertexShader:`uniform vec4 uRip[8];uniform float uTime,uJelly;varying vec3 vPos;varying vec3 vN;varying vec3 vView;varying float vRip;
+void main(){vPos=position;vec3 p=normalize(position);float r=0.;
+for(int i=0;i<8;i++){float age=uTime-uRip[i].w;if(age>0.&&age<4.){float a=acos(clamp(dot(p,uRip[i].xyz),-1.,1.));
+float front=age*1.6;float env=exp(-pow((a-front)*4.,2.))*exp(-age*.9);r+=env*sin((a-front)*26.);}}
+vRip=r;float j=uJelly*sin(p.y*3.+uTime*9.)*.5;
+vec3 pos=position*(1.+r*.035+j*.04);vec4 mv=modelViewMatrix*vec4(pos,1.);vN=normalize(normalMatrix*normal);vView=normalize(-mv.xyz);gl_Position=projectionMatrix*mv;}`,
+fragmentShader:noise+`
+uniform float uTime,uPulse,uHoverAmt;uniform vec3 uHover,uBlue,uWhite;varying vec3 vPos;varying vec3 vN;varying vec3 vView;varying float vRip;
+void main(){vec3 p=normalize(vPos);float t=uTime*.06;
+float d=distance(p,uHover);float infl=uHoverAmt*exp(-d*d*9.);
+vec3 q=p*.85+vec3(0.,t*.6,t);
+float n=snoise(q)*.75+snoise(q*1.9+vec3(3.1,1.7,-t))*.25;
+n+=infl*.12*sin(d*22.-uTime*4.);
+n+=vRip*.06;
+n+=uPulse*.08*sin(length(p.xy)*8.-uTime*8.);
+float bands=n*8.*(1.+uPulse*.15)+uTime*(.03+uPulse*.5);
+float g=abs(fract(bands)-.5);float w=fwidth(bands)*1.;
+float b=1.-smoothstep(.14-w,.14+w,g);
+vec3 col=mix(uWhite,uBlue,b);
+float fr=1.-max(dot(normalize(vN),normalize(vView)),0.);
+col=mix(col,col*.82+vec3(.02,.03,.09),pow(fr,3.)*.6);
+col+=uPulse*.04;
+gl_FragColor=vec4(col,1.);}`});
+const sphere=new THREE.Mesh(new THREE.SphereGeometry(1,256,256),mat);scene.add(sphere);
+
+/* ===== physics layers ===== */
+const BLUE=new THREE.Color(0x1c19b5),ACC=new THREE.Color(0x0099ff);
+// Layer: dipole magnetic field lines with flowing pulses
+const fieldGroup=new THREE.Group();scene.add(fieldGroup);
+const fieldU={uTime:{value:0},uC:{value:BLUE}};
+const fieldMat=new THREE.ShaderMaterial({uniforms:fieldU,transparent:true,depthWrite:false,
+vertexShader:`attribute float u;varying float vU;void main(){vU=u;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+fragmentShader:`uniform float uTime;uniform vec3 uC;varying float vU;void main(){float f=fract(vU*3.-uTime*.25);
+float a=.10+.55*smoothstep(.85,1.,f);a*=smoothstep(0.,.08,vU)*smoothstep(1.,.92,vU);gl_FragColor=vec4(uC,a);}`});
+for(const L of [1.5,1.9,2.5]){for(let k=0;k<10;k++){const phi=k/10*Math.PI*2+L,pts=[],us=[];
+ const t0=Math.asin(Math.sqrt(1.04/L));const N=120;
+ for(let i=0;i<=N;i++){const th=t0+(Math.PI-2*t0)*i/N,r=L*Math.sin(th)**2;
+  pts.push(r*Math.sin(th)*Math.cos(phi),r*Math.cos(th),r*Math.sin(th)*Math.sin(phi));us.push(i/N);}
+ const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pts,3));g.setAttribute('u',new THREE.Float32BufferAttribute(us,1));
+ fieldGroup.add(new THREE.Line(g,fieldMat));}}
+fieldGroup.rotation.z=0.35;
+// Layer: orbiting particles (gravity + shell spring + magnetic swirl + pointer force)
+const PN=1600,pp=new Float32Array(PN*3),pv=new Float32Array(PN*3),pR=new Float32Array(PN),pc=new Float32Array(PN*3);
+for(let i=0;i<PN;i++){const v=new THREE.Vector3().randomDirection(),R=1.25+Math.random()*0.9;pR[i]=R;v.multiplyScalar(R);
+ pp.set([v.x,v.y,v.z],i*3);const tg=new THREE.Vector3(0,1,0).cross(v).normalize().multiplyScalar(0.55/Math.sqrt(R));pv.set([tg.x,tg.y,tg.z],i*3);
+ const c=BLUE.clone().lerp(ACC,Math.random()*.6);pc.set([c.r,c.g,c.b],i*3);}
+const pg=new THREE.BufferGeometry();pg.setAttribute('position',new THREE.BufferAttribute(pp,3));pg.setAttribute('color',new THREE.BufferAttribute(pc,3));
+const pMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,vertexColors:true,uniforms:{uS:{value:devicePixelRatio>1?2:1}},
+vertexShader:`uniform float uS;varying vec3 vC;void main(){vC=color;vec4 mv=modelViewMatrix*vec4(position,1.);gl_PointSize=uS*17./-mv.z;gl_Position=projectionMatrix*mv;}`,
+fragmentShader:`varying vec3 vC;void main(){float d=length(gl_PointCoord-.5);if(d>.5)discard;gl_FragColor=vec4(vC,smoothstep(.5,.15,d)*.8);}`});
+const particles=new THREE.Points(pg,pMat);scene.add(particles);
+const ptr=new THREE.Vector3(0,0,99);let ptrOn=0,attract=false,shock=0;const plane=new THREE.Plane(),hitP=new THREE.Vector3();
+addEventListener('keydown',e=>{if(e.key==='Shift')attract=true});addEventListener('keyup',e=>{if(e.key==='Shift')attract=false});
+addEventListener('pointerleave',()=>ptrOn=0);
+addEventListener('contextmenu',e=>e.preventDefault());
+function stepThira(dt,t){const B=new THREE.Vector3(0,1,0).applyEuler(fieldGroup.rotation);const sgn=attract?-1:1;
+ for(let i=0;i<PN;i++){const j=i*3;let x=pp[j],y=pp[j+1],z=pp[j+2],vx=pv[j],vy=pv[j+1],vz=pv[j+2];
+  const r=Math.hypot(x,y,z)+1e-4,ix=x/r,iy=y/r,iz=z/r;
+  const g=-0.32/(r*r)-(r-pR[i])*1.2+shock*Math.exp(-(r-1)*2)*1.5; // gravity + spring to home shell + click shockwave
+  let ax=ix*g,ay=iy*g,az=iz*g;
+  ax+=(vy*B.z-vz*B.y)*0.35;ay+=(vz*B.x-vx*B.z)*0.35;az+=(vx*B.y-vy*B.x)*0.35; // Lorentz-like swirl v×B
+  ax+=-iz*0.12;az+=ix*0.12; // keep orbital drift around y
+  if(ptrOn){const dx=x-ptr.x,dy=y-ptr.y,dz=z-ptr.z,d2=dx*dx+dy*dy+dz*dz+.02,f=sgn*ptrOn*0.9*Math.exp(-d2*3)/Math.sqrt(d2);ax+=dx*f;ay+=dy*f;az+=dz*f;}
+  vx=(vx+ax*dt)*0.985;vy=(vy+ay*dt)*0.985;vz=(vz+az*dt)*0.985; // damping
+  x+=vx*dt;y+=vy*dt;z+=vz*dt;const r2=Math.hypot(x,y,z);if(r2<1.06){const k=1.06/r2;x*=k;y*=k;z*=k;const vd=(vx*x+vy*y+vz*z)/1.06;if(vd<0){vx-=1.6*vd*x/1.06;vy-=1.6*vd*y/1.06;vz-=1.6*vd*z/1.06;}} // bounce off surface
+  pp[j]=x;pp[j+1]=y;pp[j+2]=z;pv[j]=vx;pv[j+1]=vy;pv[j+2]=vz;}
+ pg.attributes.position.needsUpdate=true;}
+
+/* ===== consciousness modes: each mind expressed as a force model ===== */
+const MODES={thira:{c:[0x1c19b5,0x0099ff]},ultron:{c:[0x8a1020,0xd02a2a]},vision:{c:[0x6b2a7a,0xd8a83a]},jarvis:{c:[0x1b5f8a,0x36c6ff]},friday:{c:[0x7a3d10,0xff8a2a]}};
+let mode='thira';const base=new Float32Array(pc),act=new Float32Array(PN),phase=new Float32Array(PN),omega=new Float32Array(PN),conv=new Uint8Array(PN);
+for(let i=0;i<PN;i++){phase[i]=Math.random()*6.283;omega[i]=0.9+(Math.random()-.5)*0.6;}
+const ptrPrev=new THREE.Vector3(),ptrVel=new THREE.Vector3(),tmp=new THREE.Vector3();
+// JARVIS network: 360 nodes on the shell, each spring-linked to 3 nearest
+const JN=360,jEdges=[];for(let i=0;i<JN;i++){const d=[];for(let k=0;k<JN;k++)if(k!==i){const a=i*3,b=k*3;d.push([(pp[a]-pp[b])**2+(pp[a+1]-pp[b+1])**2+(pp[a+2]-pp[b+2])**2,k]);}
+ d.sort((x,y)=>x[0]-y[0]);for(let n=0;n<3;n++)if(i<d[n][1])jEdges.push(i,d[n][1],Math.sqrt(d[n][0]));}
+const jHome=new Float32Array(JN*3);for(let i=0;i<JN;i++){tmp.set(pp[i*3],pp[i*3+1],pp[i*3+2]).setLength(1.45);jHome.set([tmp.x,tmp.y,tmp.z],i*3);}
+const jPos=new Float32Array(jEdges.length/3*6),jg=new THREE.BufferGeometry();jg.setAttribute('position',new THREE.BufferAttribute(jPos,3));
+const jLines=new THREE.LineSegments(jg,new THREE.LineBasicMaterial({color:0x1b5f8a,transparent:true,opacity:.28}));jLines.visible=false;scene.add(jLines);
+// Vision: the central stone
+const stone=new THREE.Mesh(new THREE.OctahedronGeometry(0.11,0),new THREE.MeshBasicMaterial({color:0xd8a83a}));stone.visible=false;scene.add(stone);
+// Ultron: control lattice
+const LAT=0.32;let fracture=0,ultronSeed=-1,cascadeT=0;
+function setMode(m){mode=m;const [a,b]=MODES[m].c.map(c=>new THREE.Color(c));
+ for(let i=0;i<PN;i++){const c=a.clone().lerp(b,Math.random()*.6);base.set([c.r,c.g,c.b],i*3);act[i]=0;conv[i]=0;}
+ pc.set(base);pg.attributes.color.needsUpdate=true;fieldU.uC.value=a;uniforms.uBlue.value.set(a.r,a.g,a.b);
+ fieldGroup.visible=m!=='jarvis'&&m!=='friday';jLines.visible=m==='jarvis';stone.visible=m==='vision';ultronSeed=-1;
+ document.querySelectorAll('#modes button').forEach(x=>x.classList.toggle('on',x.dataset.m===m));}
+const mb=document.getElementById('modes');Object.keys(MODES).forEach((k,i)=>{const b=document.createElement('button');b.textContent=(i+1)+' '+k;b.dataset.m=k;
+ b.onpointerdown=e=>e.stopPropagation();b.onpointerup=e=>{e.stopPropagation();setMode(k)};mb.appendChild(b);});
+addEventListener('keydown',e=>{const k=Object.keys(MODES)[+e.key-1];if(k)setMode(k);});
+function onClickMode(){if(mode==='ultron'){ultronSeed=(Math.random()*PN)|0;conv[ultronSeed]=1;cascadeT=0;fracture=1;}
+ if(mode==='jarvis'){let best=0,bd=1e9;for(let i=0;i<JN;i++){const d=(pp[i*3]-ptr.x)**2+(pp[i*3+1]-ptr.y)**2+(pp[i*3+2]-ptr.z)**2;if(d<bd){bd=d;best=i;}}act[best]=1;}
+ if(mode==='vision')for(let i=0;i<PN;i++)phase[i]+=Math.random()*3; // perturb; sync re-forms
+ if(mode==='friday')for(let i=0;i<PN;i++){const j=i*3;pv[j]+=(Math.random()-.5)*3;pv[j+1]+=(Math.random()-.5)*3;pv[j+2]+=(Math.random()-.5)*3;}}
+function stepParticles(dt,t){ptrVel.subVectors(ptr,ptrPrev).divideScalar(Math.max(dt,1e-3)).clampLength(0,6);ptrPrev.copy(ptr);
+ if(mode==='thira')return stepThira(dt,t);
+ if(mode==='ultron')stepUltron(dt,t);else if(mode==='vision')stepVision(dt,t);else if(mode==='jarvis')stepJarvis(dt,t);else stepFriday(dt,t);
+ pg.attributes.position.needsUpdate=true;pg.attributes.color.needsUpdate=true;}
+function integrate(j,ax,ay,az,dt,damp,minR){let vx=(pv[j]+ax*dt)*damp,vy=(pv[j+1]+ay*dt)*damp,vz=(pv[j+2]+az*dt)*damp;
+ let x=pp[j]+vx*dt,y=pp[j+1]+vy*dt,z=pp[j+2]+vz*dt;if(minR){const r=Math.hypot(x,y,z);if(r<minR){const k=minR/r;x*=k;y*=k;z*=k;}}
+ pp[j]=x;pp[j+1]=y;pp[j+2]=z;pv[j]=vx;pv[j+1]=vy;pv[j+2]=vz;}
+// ULTRON: one dominant attractor forcing conformity; converted nodes clone into a rigid lattice; cascade self-propagates; lattice fractures & rebuilds
+function stepUltron(dt,t){const A=tmp.set(Math.cos(t*.4)*1.9,Math.sin(t*.27)*.9,Math.sin(t*.4)*1.9);if(ptrOn)A.lerp(ptr,.6);
+ cascadeT+=dt;fracture*=Math.exp(-dt*1.2);if(ultronSeed<0&&Math.random()<dt*.3){ultronSeed=0;conv[(Math.random()*PN)|0]=1;}
+ let nc=0;for(let i=0;i<PN;i++)if(conv[i])nc++;
+ const spread=Math.min(PN-nc,Math.ceil(nc*dt*1.6)); // exponential self-replication
+ for(let s=0;s<spread;s++){const i=(Math.random()*PN)|0;conv[i]=1;act[i]=1;}
+ if(nc>=PN*0.97&&Math.random()<dt*.25){fracture=1;for(let i=0;i<PN;i++)if(Math.random()<.85)conv[i]=0;}
+ for(let i=0;i<PN;i++){const j=i*3,x=pp[j],y=pp[j+1],z=pp[j+2];let ax,ay,az;
+  if(conv[i]){const lx=Math.round(x/LAT)*LAT,ly=Math.round(y/LAT)*LAT,lz=Math.round(z/LAT)*LAT,r=Math.hypot(lx,ly,lz)||1,k=r<1.15?1.15/r:r>2.2?2.2/r:1;
+   ax=(lx*k-x)*30;ay=(ly*k-y)*30;az=(lz*k-z)*30;if(fracture>.05){ax+=x*fracture*25;ay+=y*fracture*25;az+=z*fracture*25;}
+   integrate(j,ax,ay,az,dt,.82,1.08);}
+  else{const dx=A.x-x,dy=A.y-y,dz=A.z-z,d=Math.hypot(dx,dy,dz)+.2,f=2.2/(d*d);ax=dx*f;ay=dy*f;az=dz*f;
+   const r=Math.hypot(x,y,z);if(r>2.6){ax-=x;ay-=y;az-=z;}integrate(j,ax,ay,az,dt,.96,1.08);}
+  act[i]*=Math.exp(-dt*3);const w=conv[i]?.35+act[i]*.65:0;
+  pc[j]=base[j]*(1-w)+1*w*.9;pc[j+1]=base[j+1]*(1-w)+.1*w;pc[j+2]=base[j+2]*(1-w)+.1*w;}}
+// VISION: Kuramoto phase-locking -> global coherence; no collisions (particles phase through each other and the core)
+function stepVision(dt,t){let sr=0,si=0;for(let i=0;i<PN;i++){sr+=Math.cos(phase[i]);si+=Math.sin(phase[i]);}
+ const R=Math.hypot(sr,si)/PN,psi=Math.atan2(si,sr),K=1.4;stone.rotation.y+=dt*.6;stone.position.copy(camera.position).setLength(1.14);stone.scale.setScalar(1+.25*R*Math.sin(psi));
+ for(let i=0;i<PN;i++){const j=i*3;phase[i]+=(omega[i]+K*R*Math.sin(psi-phase[i]))*dt;
+  const x=pp[j],y=pp[j+1],z=pp[j+2],r=Math.hypot(x,y,z)+1e-4,target=pR[i]+.12*Math.sin(phase[i]);
+  let ax=-x/r*(r-target)*6-z*.5,ay=-y/r*(r-target)*6-y*.3,az=-z/r*(r-target)*6+x*.5;
+  if(ptrOn){const dx=x-ptr.x,dy=y-ptr.y,dz=z-ptr.z,d2=dx*dx+dy*dy+dz*dz+.05,f=.35*Math.exp(-d2*3);ax+=dx*f;ay+=dy*f;az+=dz*f;}
+  integrate(j,ax,ay,az,dt,.95,0);const b=.5+.5*Math.sin(phase[i]);
+  pc[j]=base[j]*(.6+.4*b);pc[j+1]=base[j+1]*(.6+.4*b);pc[j+2]=base[j+2]*(.6+.4*b);}}
+// JARVIS: distributed spring network; information pulses propagate node-to-node in orderly waves; anticipates pointer (predicted position)
+let jWave=0;function stepJarvis(dt,t){const pred=tmp.copy(ptr).addScaledVector(ptrVel,.35);
+ jWave+=dt;if(jWave>2.5){jWave=0;act[(Math.random()*JN)|0]=1;}
+ const nAct=new Float32Array(JN);for(let e=0;e<jEdges.length;e+=3){const a=jEdges[e],b=jEdges[e+1],L=jEdges[e+2];
+  nAct[a]=Math.max(nAct[a],act[b]*.93);nAct[b]=Math.max(nAct[b],act[a]*.93);
+  const ia=a*3,ib=b*3,dx=pp[ib]-pp[ia],dy=pp[ib+1]-pp[ia+1],dz=pp[ib+2]-pp[ia+2],d=Math.hypot(dx,dy,dz)+1e-4,f=(d-L)*8/d*dt;
+  pv[ia]+=dx*f;pv[ia+1]+=dy*f;pv[ia+2]+=dz*f;pv[ib]-=dx*f;pv[ib+1]-=dy*f;pv[ib+2]-=dz*f;
+  const o=e/3*6;jPos.set([pp[ia],pp[ia+1],pp[ia+2],pp[ib],pp[ib+1],pp[ib+2]],o);}
+ jg.attributes.position.needsUpdate=true;
+ for(let i=0;i<PN;i++){const j=i*3,x=pp[j],y=pp[j+1],z=pp[j+2];let ax,ay,az;
+  if(i<JN){act[i]=Math.max(act[i]*Math.exp(-dt*2.2),nAct[i]*(1-dt*3));ax=(jHome[j]-x)*4;ay=(jHome[j+1]-y)*4;az=(jHome[j+2]-z)*4;}
+  else{const r=Math.hypot(x,y,z)+1e-4;ax=-x/r*(r-pR[i])*3-z*.6;ay=-y/r*(r-pR[i])*3;az=-z/r*(r-pR[i])*3+x*.6;act[i]*=.95;}
+  if(ptrOn){const dx=x-pred.x,dy=y-pred.y,dz=z-pred.z,d2=dx*dx+dy*dy+dz*dz+.03,f=1.2*Math.exp(-d2*4)/Math.sqrt(d2);ax+=dx*f;ay+=dy*f;az+=dz*f;if(i<JN&&d2<.06)act[i]=1;}
+  integrate(j,ax,ay,az,dt,.9,1.05);const w=Math.min(1,act[i]);
+  pc[j]=base[j]+(1-base[j])*w*.2;pc[j+1]=base[j+1]+(.85-base[j+1])*w;pc[j+2]=base[j+2]+(1-base[j+2])*w;}}
+// FRIDAY: boids swarm (separation, alignment, cohesion via sampled neighbours) + fast pointer-chasing bursts
+function stepFriday(dt,t){const S=10;
+ for(let i=0;i<PN;i++){const j=i*3,x=pp[j],y=pp[j+1],z=pp[j+2];let cx=0,cy=0,cz=0,vx=0,vy=0,vz=0,sx=0,sy=0,sz=0;
+  for(let s=0;s<S;s++){const k=((i+1+s*157+((t*60)|0)*31)%PN)*3,dx=pp[k]-x,dy=pp[k+1]-y,dz=pp[k+2]-z,d2=dx*dx+dy*dy+dz*dz;
+   cx+=dx;cy+=dy;cz+=dz;vx+=pv[k];vy+=pv[k+1];vz+=pv[k+2];if(d2<.04){sx-=dx/(d2+.005);sy-=dy/(d2+.005);sz-=dz/(d2+.005);}}
+  let ax=cx/S*.6+(vx/S-pv[j])*2+sx*.02,ay=cy/S*.6+(vy/S-pv[j+1])*2+sy*.02,az=cz/S*.6+(vz/S-pv[j+2])*2+sz*.02;
+  const r=Math.hypot(x,y,z)+1e-4;ax+=-x/r*(r-1.7)*2.5;ay+=-y/r*(r-1.7)*2.5;az+=-z/r*(r-1.7)*2.5;
+  ax+=-z*.9;az+=x*.9;
+  if(ptrOn){const dx=ptr.x-x,dy=ptr.y-y,dz=ptr.z-z,d=Math.hypot(dx,dy,dz)+.1;const f=(d<.25?-6:3)*Math.exp(-d*1.2)/d;ax+=dx*f;ay+=dy*f;az+=dz*f;}
+  integrate(j,ax,ay,az,dt,.97,1.08);let sp=Math.hypot(pv[j],pv[j+1],pv[j+2]);if(sp>3.5){const k=3.5/sp;pv[j]*=k;pv[j+1]*=k;pv[j+2]*=k;}
+  const w=Math.min(1,sp/3);pc[j]=base[j]+(1-base[j])*w*.6;pc[j+1]=base[j+1]+(.8-base[j+1])*w*.6;pc[j+2]=base[j+2]+(.4-base[j+2])*w*.6;}}
+// Layer: jelly spring (sphere wobble with inertia) + ripple sources
+let jelly=0,jellyV=0,ripI=0;
+function addRipple(dir,t){uniforms.uRip.value[ripI].set(dir.x,dir.y,dir.z,t);ripI=(ripI+1)%8;jellyV+=2.2;shock=mode==='thira'?1:0;onClickMode();}
+const ray=new THREE.Raycaster(),m=new THREE.Vector2();let hovering=false;
+addEventListener('pointermove',e=>{m.set(e.clientX/innerWidth*2-1,-e.clientY/innerHeight*2+1);ray.setFromCamera(m,camera);
+ const h=ray.intersectObject(sphere)[0];hovering=!!h;if(h)uniforms.uHover.value.copy(sphere.worldToLocal(h.point.clone()).normalize());
+ plane.setFromNormalAndCoplanarPoint(camera.getWorldDirection(new THREE.Vector3()).negate(),new THREE.Vector3());
+ if(h)ptr.copy(h.point);else if(ray.ray.intersectPlane(plane,hitP))ptr.copy(hitP);ptrOn=1;});
+let pulseT=-10;let down=null;
+addEventListener('pointerdown',e=>down=[e.clientX,e.clientY]);
+addEventListener('pointerup',e=>{if(down&&Math.hypot(e.clientX-down[0],e.clientY-down[1])<5){pulseT=clock.getElapsedTime();showPhrase();
+ m.set(e.clientX/innerWidth*2-1,-e.clientY/innerHeight*2+1);ray.setFromCamera(m,camera);const h=ray.intersectObject(sphere)[0];
+ const dir=h?sphere.worldToLocal(h.point.clone()).normalize():camera.position.clone().normalize();addRipple(dir,pulseT);}down=null;});
+function resize(){renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;
+ const minA=Math.min(1,camera.aspect);camera.position.setLength((still?3.95:5.2)/minA**0.8);camera.updateProjectionMatrix();}
+addEventListener('resize',resize);resize();
+const clock=new THREE.Clock();
+let lastT=0;if(still)for(let i=0;i<240;i++)stepParticles(1/60,i/60);
+renderer.setAnimationLoop(()=>{const t=still?12:clock.getElapsedTime();uniforms.uTime.value=t;
+ const dt=Math.min(t-lastT,1/30);lastT=t;fieldU.uTime.value=t;
+ if(!still&&dt>0){stepParticles(dt,t);shock*=Math.exp(-dt*4);
+  jellyV+=(-60*jelly-4*jellyV)*dt;jelly+=jellyV*dt;uniforms.uJelly.value=jelly;
+  fieldGroup.rotation.y+=dt*0.15;}
+ const pt=t-pulseT;uniforms.uPulse.value=pt>=0&&pt<2.2?Math.sin(Math.PI*pt/2.2)**2:0;
+ uniforms.uHoverAmt.value+=((hovering?1:0)-uniforms.uHoverAmt.value)*.06;
+ controls.update();renderer.render(scene,camera);});
+const PHR=[["architecture is a mindful practice","practice"],
+["a dialogue between the built environment and the natural world","philosophy"],
+["each space becomes a sanctuary","sacred geometry"],
+["build with intention, vision, and heart","motivation"],
+["spaces that resonate with the rhythm of existence","we are storytellers"],
+["where tradition and nature intertwine","kerala"],
+["a living expression of balance between humanity and nature","vision"]];
+let pi=-1,ph=document.getElementById('phrase'),pill=document.getElementById('pill'),ht;
+function showPhrase(){pi=(pi+1)%PHR.length;ph.classList.remove('on');clearTimeout(ht);
+ setTimeout(()=>{ph.innerHTML=PHR[pi][0]+'<small>'+PHR[pi][1]+'</small>';ph.classList.add('on');pill.textContent='click again';
+ ht=setTimeout(()=>{ph.classList.remove('on');pill.textContent='click to explore';},5200);},pi?350:50);}
+window.showPhrase=showPhrase;
+{const q=new URLSearchParams(location.search).get('mode');if(q&&MODES[q])setMode(q);}
+window.setMode=setMode;window.__ready=true;
+</script></body></html>
