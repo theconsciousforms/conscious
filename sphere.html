@@ -32,6 +32,8 @@ document.body.appendChild(renderer.domElement);
 const scene=new THREE.Scene();
 const camera=new THREE.PerspectiveCamera(35,1,0.1,100);camera.position.set(0,0,still?3.95:5.2);
 const controls=new OrbitControls(camera,renderer.domElement);
+// Scroll pass-through when embedded: vertical touch pans the page, wheel is forwarded to the parent
+if(window.parent!==window){renderer.domElement.style.touchAction='pan-y';addEventListener('wheel',e=>{try{window.parent.postMessage({type:'tcf-scroll',dx:e.deltaX,dy:e.deltaY,mode:e.deltaMode},'*')}catch(_){}} ,{passive:true});}
 controls.enableDamping=true;controls.dampingFactor=0.035;controls.rotateSpeed=0.7;controls.enableZoom=false;controls.enablePan=false;controls.autoRotate=!still;controls.autoRotateSpeed=0.6;
 const noise=`
 vec3 mod289(vec3 x){return x-floor(x*(1./289.))*289.;}vec4 mod289(vec4 x){return x-floor(x*(1./289.))*289.;}
